@@ -1,3 +1,5 @@
+alert("it's ya boi");
+
 class Biome {
     constructor(n) {
         this.name = name;
