@@ -31,9 +31,29 @@ var biomes = [
 
 var players = [{}, {}];
 
+var mapContianer = document.createElement("div");
+mapContianer.className = "map";
+mapContianer.style.display = "grid";
+
 function main() {
+    beginGames();
+}
+
+function beginGames()
+{
     var world = worldGen(30, biomes, 9);
     printWorld(world);
+    MainLoop.setUpdate(update).setDraw(draw).start();
+}
+
+function update()
+{
+
+}
+
+function draw()
+{
+    paintEntities();
 }
 
 function vToC(value) {
@@ -92,12 +112,9 @@ function worldGen(radius, biomes, sharpness) {
 }
 
 function printWorld(w) {
-    var container = document.createElement("div");
-    container.className = "map";
-    container.style.display = "grid";
-    container.style.gridTemplateColumns = "10px ".repeat(w.width);
-    container.style.gridTemplateRows = "10px ".repeat(w.height);
-    content.appendChild(container);
+    mapContianer.style.gridTemplateColumns = "10px ".repeat(w.width);
+    mapContianer.style.gridTemplateRows = "10px ".repeat(w.height);
+    content.appendChild(mapContianer);
     for(var j = 0; j < w.width; ++j) {
         for(var i = 0; i < w.height; ++i) {
             var item = document.createElement("div");
@@ -105,9 +122,21 @@ function printWorld(w) {
             item.style.backgroundColor = color;
             item.style.width = "10px";
             item.style.height = "10px";
-            container.appendChild(item);
+            mapContianer.appendChild(item);
         }
     }
+
+}
+
+function paintEntities()
+{
+    players.forEach(function(player)
+    {
+        var icon = document.createElement("img");
+        icon.className = "player";
+        icon.src = "images/sans.png";
+        mapContianer.appendChild(icon);
+    });
 }
 
 main();
