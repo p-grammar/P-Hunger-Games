@@ -21,14 +21,16 @@ class World {
 }
 
 var biomes = [
-    new Biome("forest", "#13af44"),
-    new Biome("mountains", "#878481"),
-    new Biome("river", "#1accef"),
-    new Biome("plains", "#dcea60")
+    new Biome("lake", "#1560d8"),
+    new Biome("beach", "#eddea6"),
+    new Biome("plains", "#a1c64b"),
+    new Biome("forest", "#4f8c0e"),
+    new Biome("mountains", "#635e5c"),
+    new Biome("desert", "#eaa983")
 ]
 
 function main() {
-    var world = worldGen(15, biomes, 10);
+    var world = worldGen(30, biomes, 9);
     printWorld(world);
 }
 
@@ -44,39 +46,44 @@ function worldGen(radius, biomes, sharpness) {
     var size = radius * 2 + 1;
     var superSize = Math.ceil(size / sharpness) + 2;
 
-    var superChunks = [];
-    var chunks = [];
+    var chunks = [...Array(size)].map(e => Array(size));
+    var superChunks = [...Array(superSize)].map(e => Array(superSize));
 
-    for(var i = 0; i < superSize; ++i) {
-        superChunks.push([]);
-        for(var j = 0; j < superSize; ++j) {
-            superChunks[i][j] = [Math.random(), Math.random()];
+    for(var j = 0; j < superSize; ++j) {
+        for(var i = 0; i < superSize; ++i) {
+            superChunks[i][j] = [Math.random(), Math.random(), Math.random()];
         }
     }
 
-    for(var i = 0; i < size; ++i) {
-        chunks.push([]);
-        var superX = Math.floor(i / sharpness) + 1;
-        var subX = (i % sharpness) / sharpness;
-        for(var j = 0; j < size; ++j) {
-            var superY = Math.floor(j / sharpness) + 1;
-            var subY = (j % sharpness) / sharpness;
+    for(var j = 0; j < size; ++j) {
+        var superY = Math.floor(j / sharpness) + 1;
+        var subY = (j % sharpness) / sharpness;
+        for(var i = 0; i < size; ++i) {
+            var superX = Math.floor(i / sharpness) + 1;
+            var subX = (i % sharpness) / sharpness;
 
-            console.log(superChunks[superX - 1][superY] + " " + superChunks[superX][superY] + " " + superChunks[superX + 1][superY]);
             var value = 0;
-            value += Math.abs((subX - 1) - superChunks[superX + 1][superY    ][0]);
-            //value += Math.abs((subX + 1) - superChunks[superX - 1][superY][0]);
-            //value += Math.abs((subX - 1) - superChunks[superX + 1][superY][0]);
+            for(var k = -1; k < 2; ++k) {
+                for(var r = -1; r < 2; ++r) {
+                    var tempX = (subX - k) - (superChunks[superX + k][superY + r][0]);
+                    var tempY = (subY - r) - (superChunks[superX + k][superY + r][1]);
+                    var tempZ = (superChunks[superX + k][superY + r][2]);
 
-            value += Math.abs((subY - 1) - superChunks[superX    ][superY + 1][1]);
-            //value += Math.abs((subY - 1) - superChunks[superX][superY - 1][1]);
-            value += Math.abs((subY + 1) - superChunks[superX][superY - 1][1]);
+                    var tot = (1 - ((tempX * tempX) + (tempY * tempY) + (tempZ * tempZ))) / 3;
+                    if(tot < 0) {
+                        tot = 0;
+                    }
+                    value += tot;
+                }
+            }
 
-            value /= 8;
+            if(value >= 1) {
+                value = 0.999999
+            }
 
             var sel = Math.floor(value * biomes.length);
 
-            chunks[i][j] = new Chunk(biomes[sel], vToC((i * size + j)/ (size* size)));
+            chunks[i][j] = new Chunk(biomes[sel], vToC(value));
         }
     }
     return new World(size, size, chunks);
@@ -88,10 +95,10 @@ function printWorld(w) {
     container.style.gridTemplateColumns = "10px ".repeat(w.width);
     container.style.gridTemplateRows = "10px ".repeat(w.height);
     document.body.appendChild(container);
-    for(var i = 0; i < w.width; ++i) {
-        for(var j = 0; j < w.height; ++j) {
+    for(var j = 0; j < w.width; ++j) {
+        for(var i = 0; i < w.height; ++i) {
             var item = document.createElement("div");
-            var color = w.chunks[i][j].value;
+            var color = w.chunks[i][j].biome.color;
             item.style.backgroundColor = color;
             item.style.width = "10px";
             item.style.height = "10px";
