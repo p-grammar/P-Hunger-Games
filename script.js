@@ -69,7 +69,7 @@ function worldGen(radius, biomes, sharpness) {
                     var tempY = (subY - r) - (superChunks[superX + k][superY + r][1]);
                     var tempZ = (superChunks[superX + k][superY + r][2]);
 
-                    var tot = (1 - ((tempX * tempX) + (tempY * tempY) + (tempZ * tempZ))) / 3;
+                    var tot = (1 - ((tempX * tempX) + (tempY * tempY) + (tempZ * tempZ))) / 2;
                     if(tot < 0) {
                         tot = 0;
                     }
@@ -91,10 +91,11 @@ function worldGen(radius, biomes, sharpness) {
 
 function printWorld(w) {
     var container = document.createElement("div");
+    container.className = "map";
     container.style.display = "grid";
     container.style.gridTemplateColumns = "10px ".repeat(w.width);
     container.style.gridTemplateRows = "10px ".repeat(w.height);
-    document.body.appendChild(container);
+    content.appendChild(container);
     for(var j = 0; j < w.width; ++j) {
         for(var i = 0; i < w.height; ++i) {
             var item = document.createElement("div");
