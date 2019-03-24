@@ -29,6 +29,8 @@ var biomes = [
     new Biome("desert", "#eaa983")
 ]
 
+var players = [{}, {}];
+
 function main() {
     var world = worldGen(30, biomes, 9);
     printWorld(world);
