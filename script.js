@@ -31,9 +31,17 @@ var biomes = [
 
 var players = [new Player(), new Player()];
 
+var mapSuperSuper = document.createElement("div");
+mapSuperSuper.className = "mapSuperSuper";
+content.appendChild(mapSuperSuper);
+
+var mapHideButton = document.createElement("div");
+mapHideButton.className = "mapHideButton";
+mapSuperSuper.appendChild(mapHideButton);
+
 var mapSuperContainer = document.createElement("div");
 mapSuperContainer.className = "mapSuper";
-content.appendChild(mapSuperContainer);
+mapSuperSuper.appendChild(mapSuperContainer);
 
 function main() {
     beginGames();
