@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 
 const NUM_SKILLS = 10;
 

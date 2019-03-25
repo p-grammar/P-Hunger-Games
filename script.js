@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 class Biome {
     constructor(n, c) {
         this.name = n;
@@ -44,7 +45,10 @@ mapSuperContainer.className = "mapSuper";
 mapSuperSuper.appendChild(mapSuperContainer);
 
 var world;
-var time = 0;
+var minutes = 0;
+var frameCounter = 0;
+
+var eventQueue = [];
 
 function main() {
     beginGames();
@@ -66,22 +70,36 @@ function setupPlayers()
     {
         mapSuperContainer.appendChild(player.icon);
     });
-
 }
 
 function update()
 {
-    time += .01;
-    if (time >= 5)
-        content.style.backgroundColor = "#000000";
-    else
-        content.style.backgroundColor = "#f4e2d7";
-    if (time >= 10)
-        time = 0;
+    frameCounter++;
+    if (frameCounter >= 60)
+    {
+        frameCounter = 0;
+        minutes++;
+        if (minutes % 10 === 0)
+        {
+            if (content.style.backgroundColor === 'rgb(0, 0, 0)')
+            content.style.backgroundColor = "#f4e2d7";
+        else
+            content.style.backgroundColor = "#000000";
+        }
+    }
+
     players.forEach(function(player) {
         player.location.x++;
         if (player.location.x > 500)
             player.location.x = 0;
+    });
+
+    eventQueue.forEach(function(event) {
+        if (event.canExecute())
+        {
+            event.execute();
+            eventQueue = eventQueue.filter(e => e !== event);
+        }
     });
 }
 
