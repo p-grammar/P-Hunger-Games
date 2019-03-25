@@ -43,13 +43,16 @@ var mapSuperContainer = document.createElement("div");
 mapSuperContainer.className = "mapSuper";
 mapSuperSuper.appendChild(mapSuperContainer);
 
+var world;
+var time = 0;
+
 function main() {
     beginGames();
 }
 
 function beginGames()
 {
-    var world = worldGen(30, biomes, 9);
+    world = worldGen(30, biomes, 9);
     printWorld(world);
 
     setupPlayers();
@@ -68,6 +71,13 @@ function setupPlayers()
 
 function update()
 {
+    time += .01;
+    if (time >= 5)
+        content.style.backgroundColor = "#000000";
+    else
+        content.style.backgroundColor = "#f4e2d7";
+    if (time >= 10)
+        time = 0;
     players.forEach(function(player) {
         player.location.x++;
         if (player.location.x > 500)
@@ -148,7 +158,7 @@ function printWorld(w) {
     for(var j = 0; j < w.width; ++j) {
         for(var i = 0; i < w.height; ++i) {
             var item = document.createElement("div");
-            var color = w.chunks[i][j].value;
+            var color = w.chunks[i][j].biome.color;
             item.style.backgroundColor = color;
             item.style.width = "10px";
             item.style.height = "10px";
