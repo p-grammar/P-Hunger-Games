@@ -89,7 +89,10 @@ function worldGen(radius, biomes, sharpness) {
 
     for(var j = 0; j < superSize; ++j) {
         for(var i = 0; i < superSize; ++i) {
-            superChunks[i][j] = [Math.random(), Math.random(), Math.random()];
+            if (j > superSize / 2 - 1 && j < superSize / 2 + 1 && i > superSize / 2 - 1 && i < superSize / 2 + 1)
+                superChunks[i][j] = [0, 0, -22];
+            else 
+                superChunks[i][j] = [Math.random(), Math.random(), Math.random()];
         }
     }
 
@@ -137,7 +140,7 @@ function printWorld(w) {
     for(var j = 0; j < w.width; ++j) {
         for(var i = 0; i < w.height; ++i) {
             var item = document.createElement("div");
-            var color = w.chunks[i][j].biome.color;
+            var color = w.chunks[i][j].value;
             item.style.backgroundColor = color;
             item.style.width = "10px";
             item.style.height = "10px";
