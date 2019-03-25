@@ -132,10 +132,10 @@ function makeForm() {
             characterHolder.appendChild(grid);
 
             createPlayerInput(grid, "Name");
-            createPlayerInput(grid, "Age");
+            createPlayerDropdown(grid, "Age", "Child", "Teen", "Young Adult", "Adult", "Senior", "Ancient");
             createPlayerDropdown(grid, "EyeSight", "Good", "Fair", "Poor");
-            createPlayerInput(grid, "Weight");
-            createPlayerInput(grid, "Height");
+            createPlayerDropdown(grid, "Weight", "Light", "medium", "Heavy");
+            createPlayerDropdown(grid, "Height", "Short", "Average", "Tall");
             createPlayerDropdown(grid, "Gender", "M", "F", "?");
         }
     }
