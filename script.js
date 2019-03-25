@@ -29,11 +29,11 @@ var biomes = [
     new Biome("desert", "#eaa983")
 ]
 
-var players = [{}, {}];
+var players = [new Player(), new Player()];
 
-var mapContianer = document.createElement("div");
-mapContianer.className = "map";
-mapContianer.style.display = "grid";
+var mapSuperContainer = document.createElement("div");
+mapSuperContainer.className = "mapSuper";
+content.appendChild(mapSuperContainer);
 
 function main() {
     beginGames();
@@ -43,12 +43,28 @@ function beginGames()
 {
     var world = worldGen(30, biomes, 9);
     printWorld(world);
+
+    setupPlayers();
+
     MainLoop.setUpdate(update).setDraw(draw).start();
+}
+
+function setupPlayers()
+{
+    players.forEach(function(player)
+    {
+        mapSuperContainer.appendChild(player.icon);
+    });
+
 }
 
 function update()
 {
-
+    players.forEach(function(player) {
+        player.location.x++;
+        if (player.location.x > 100)
+            player.location.x = 0;
+    });
 }
 
 function draw()
@@ -112,9 +128,12 @@ function worldGen(radius, biomes, sharpness) {
 }
 
 function printWorld(w) {
+    var mapContianer = document.createElement("div");
+    mapContianer.className = "map";
+    mapContianer.style.display = "grid";
+    mapSuperContainer.appendChild(mapContianer);
     mapContianer.style.gridTemplateColumns = "10px ".repeat(w.width);
     mapContianer.style.gridTemplateRows = "10px ".repeat(w.height);
-    content.appendChild(mapContianer);
     for(var j = 0; j < w.width; ++j) {
         for(var i = 0; i < w.height; ++i) {
             var item = document.createElement("div");
@@ -130,12 +149,9 @@ function printWorld(w) {
 
 function paintEntities()
 {
-    players.forEach(function(player)
-    {
-        var icon = document.createElement("img");
-        icon.className = "player";
-        icon.src = "images/sans.png";
-        mapContianer.appendChild(icon);
+    players.forEach(function(player) {
+        player.icon.style.left = player.location.x + "px";
+        player.icon.style.top = player.location.y + "px";
     });
 }
 

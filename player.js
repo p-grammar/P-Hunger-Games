@@ -19,7 +19,7 @@ class Player
         this.district = 0;
 
         this.health = 10;
-        this.location = [0, 0];
+        this.location = {x: 0, y: 0};
         this.thirst = 0;
         this.hunger = 0;
         this.temperature = 75.0;
@@ -46,5 +46,9 @@ class Player
         // Skills
         this.skills = new Array(NUM_SKILLS);
         this.image = new Image(64, 64);
+
+        this.icon = document.createElement("img");
+        this.icon.className = "player";
+        this.icon.src = "images/sans.png";
     }
 }
