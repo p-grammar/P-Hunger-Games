@@ -45,6 +45,12 @@ body {
    bottom: 10px; 
 }
 
+.player {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+}
+
 .superHolder {
     position: relative;
     width: calc(100% - 20px);
@@ -53,7 +59,7 @@ body {
     margin-top: 10px;
 }
 
-.subHolder {
+.topHolder {
     display: grid;
     margin-bottom: 10px;
 
@@ -67,7 +73,22 @@ body {
     overflow: hidden;
 }
 
-.subHolder p {
+.subHolder {
+    display: grid;
+    margin-bottom: 10px;
+    padding-top: 5px;
+
+    position: relative;
+    width: 100%;
+    height: auto;
+    min-height: 40px;
+
+    box-sizing: border-box;
+    border: 5px solid #cc6528;
+    overflow: hidden;
+}
+
+.topHolder p {
     position: relative;
     margin: 5px;
 
@@ -77,13 +98,13 @@ body {
     text-align: right;
 }
 
-.subHolder input {
+.topHolder input {
     position: relative;
     margin: 5px;
     height: min-content;
 }
 
-.subHolder button {
+.topHolder button {
     position: relative;
     margin: 5px;
     height: min-content;
@@ -94,7 +115,9 @@ body {
     border: 5px solid #cc6528;
     height: fit-content;
     width: calc(100% - 10);
-    margin: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-bottom: 5px;
 }
 
 .districtHolder p {
@@ -105,17 +128,47 @@ body {
 }
 
 .characterHolder {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    grid-template-rows: 1fr;
+    grid-column-gap: 5px;
     margin: 5px;
 }
 
 .characterImage {
+    top: 0px;
+    left: 0px;
+    width: 0px;
+    height: 0px;
+    max-width: 0px;
+    max-height: 0px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+    z-index: -1;
+    margin: 0px;
+}
+
+.characterDisplay {
+    width: 100%;
+    height: 100%;
+}
+
+label {/*.characterImage + */
     margin-top: 5px;
     margin-left: 5px;
     margin-bottom: 5px;
     width: 100px;
     height: 100px;
+    min-height: 100px;
+    border: none;
 
-    background-color: red;
+    outline: none;
+
+    background: red;
+    display: inline-block;
+
+    cursor: pointer; /* "hand" cursor */
 }
 
 .characterInputGrid {
@@ -123,6 +176,7 @@ body {
 
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr;
+    grid-column-gap: 10px;
 
     margin-top: 5px;
     margin-right: 5px;
@@ -135,6 +189,7 @@ body {
     display: grid;
     grid-template-columns: max-content 1fr;
     grid-template-rows: 1fr;
+    grid-column-gap: 5px;
 }
 
 .characterInput p {
@@ -147,10 +202,4 @@ body {
 .characterInput input {
     margin: 0px;
     width: 100%;
-}
-
-.player {
-    width: 20px;
-    height: 20px;
-    position: absolute;
 }

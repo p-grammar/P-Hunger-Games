@@ -30,7 +30,7 @@ superHolder.className = "superHolder";
 content.appendChild(superHolder);
 
 topHolder = document.createElement("form");
-topHolder.className = "subHolder";
+topHolder.className = "topHolder";
 topHolder.style.gridTemplateColumns = "minmax(min-content, max-content) min-content minmax(min-content, max-content) min-content max-content";
 topHolder.style.gridTemplateRows = "min-content";
 superHolder.appendChild(topHolder);
@@ -49,6 +49,7 @@ topHolder.appendChild(text);
 
 var numberDistrictsInput = document.createElement("input");
 numberDistrictsInput.type = "number";
+numberDistrictsInput.value = "2";
 numberDistrictsInput.min = 1;
 numberDistrictsInput.max = MAX_DISTRICTS;
 topHolder.appendChild(numberDistrictsInput);
@@ -59,6 +60,7 @@ topHolder.appendChild(text2);
 
 var perDistrictsInput = document.createElement("input");
 perDistrictsInput.type = "number";
+perDistrictsInput.value = "2";
 perDistrictsInput.min = 1;
 perDistrictsInput.max = MAX_PER_DISTRICT;
 topHolder.appendChild(perDistrictsInput);
@@ -96,7 +98,7 @@ function makeForm() {
     console.log(districts + " " + per);
     for(var i = 0; i < districts; ++i) {
 
-        var districtInputContainer = document.createElement("form");
+        var districtInputContainer = document.createElement("div");
         districtInputContainer.className = "districtHolder"
         districtsHolder.appendChild(districtInputContainer);
         var districtText = document.createElement("p");
@@ -105,9 +107,60 @@ function makeForm() {
 
         for(var j = 0; j < per; ++j) {
 
-            var nameInput = document.createElement("input");
-            districtInputContainer.appendChild(nameInput);
+            var characterHolder = document.createElement("div");
+            characterHolder.className = "characterHolder";
+            districtInputContainer.appendChild(characterHolder);
+
+            var image = document.createElement("input");
+            image.type = "file";
+            image.id = (i+""+j);
+            image.className = "characterImage";
+            image.addEventListener("change", doWithImage);
+            districtsHolder.appendChild(image);
+
+            var label = document.createElement("label");
+            label.htmlFor = (i+""+j);
+            label.id = (i+""+j+"L");
+            characterHolder.appendChild(label);
+
+            var actualImg = document.createElement("img");
+            actualImg.className = "characterDisplay";
+            label.appendChild(actualImg);
+
+            var grid = document.createElement("div");
+            grid.className = "characterInputGrid";
+            characterHolder.appendChild(grid);
+
+            for(var k = 0; k < 6; ++k) {
+                var inputHolder = document.createElement("div");
+                inputHolder.className = "characterInput";
+                grid.appendChild(inputHolder);
+
+                var characterText = document.createElement("p");
+                characterText.innerText = "test P"
+                inputHolder.appendChild(characterText);
+
+                var characterInput = document.createElement("input");
+                inputHolder.appendChild(characterInput);
+            }
 
         }
     }
+}
+
+function doWithImage(e) {
+    var file = this.files[0];
+    var findMe = this.id + "L";
+    var reader = new FileReader();
+
+    reader.onload = function (e) {
+        console.log(findMe + " | " + document.getElementById(findMe));
+        document.getElementById(findMe).lastChild.src = e.target.result;//.style.background = "blue";//e.target.result;
+    };
+
+    reader.readAsDataURL(file);
+}
+
+function keek() {
+    alert("keek");
 }
