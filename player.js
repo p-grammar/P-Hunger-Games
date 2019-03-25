@@ -47,6 +47,8 @@ class Player
         this.skills = new Array(NUM_SKILLS);
         this.image = new Image(64, 64);
 
+        this.items = [];
+
         this.icon = document.createElement("img");
         this.icon.className = "player";
         this.icon.src = "images/sans.png";
