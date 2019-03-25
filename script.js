@@ -36,9 +36,48 @@ var mapSuperSuper = document.createElement("div");
 mapSuperSuper.className = "mapSuperSuper";
 content.appendChild(mapSuperSuper);
 
+/* hide button stuff VVVVVVVVVVVVV */
+var hideButtonGoing = false;
+var hideButtonOn = false;
+
+var mapHideButtonContainer = document.createElement("div");
+mapHideButtonContainer.className = "mapHideButtonContainer";
+    mapHideButtonContainer.onmouseenter = hideButtonEnter;
+    mapHideButtonContainer.on
+    mapHideButtonContainer.onmouseleave = hideButtonLeave;
+mapSuperSuper.appendChild(mapHideButtonContainer);
+
+function hideButtonEnter() {
+    mapHideButton.preventDefault;
+    mapHideButton.classList.remove("mapHideButtonAnimationUp");
+    mapHideButton.classList.remove("mapHideButtonAnimationDown");
+    void mapHideButton.offsetWidth;
+    mapHideButton.classList.add("mapHideButtonAnimationUp");
+}
+
+function hideButtonLeave() {
+    mapHideButton.preventDefault;
+    mapHideButton.classList.remove("mapHideButtonAnimationDown");
+    mapHideButton.classList.remove("mapHideButtonAnimationUp");
+    void mapHideButton.offsetWidth;
+    mapHideButton.classList.add("mapHideButtonAnimationDown");
+}
+
 var mapHideButton = document.createElement("div");
 mapHideButton.className = "mapHideButton";
-mapSuperSuper.appendChild(mapHideButton);
+    mapHideButton.onclick = function() {
+        if(mapHidden) {
+            mapSuperContainer.classList.remove("mapSuperHidden");
+            mapHidden = false;
+        } else {
+            mapSuperContainer.classList.add("mapSuperHidden");
+            mapHidden = true;
+        }
+    }
+mapHideButtonContainer.appendChild(mapHideButton);
+/* hide button stuff ^^^^^^^^^^^^^^^^^^^ */
+
+var mapHidden = false;
 
 var mapSuperContainer = document.createElement("div");
 mapSuperContainer.className = "mapSuper";
