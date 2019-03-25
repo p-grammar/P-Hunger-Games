@@ -62,7 +62,7 @@ function update()
 {
     players.forEach(function(player) {
         player.location.x++;
-        if (player.location.x > 100)
+        if (player.location.x > 500)
             player.location.x = 0;
     });
 }

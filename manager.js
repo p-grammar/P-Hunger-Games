@@ -95,7 +95,6 @@ function makeForm() {
         districtsHolder.removeChild(districtsHolder.lastChild);
     }
 
-    console.log(districts + " " + per);
     for(var i = 0; i < districts; ++i) {
 
         var districtInputContainer = document.createElement("div");
@@ -111,12 +110,12 @@ function makeForm() {
             characterHolder.className = "characterHolder";
             districtInputContainer.appendChild(characterHolder);
 
-            var image = document.createElement("input");
-            image.type = "file";
-            image.id = (i+""+j);
-            image.className = "characterImage";
-            image.addEventListener("change", doWithImage);
-            districtsHolder.appendChild(image);
+            var uploadButton = document.createElement("input");
+            uploadButton.type = "file";
+            uploadButton.id = (i+""+j);
+            uploadButton.className = "characterImage";
+            uploadButton.addEventListener("change", doWithImage);
+            districtsHolder.appendChild(uploadButton);
 
             var label = document.createElement("label");
             label.htmlFor = (i+""+j);
@@ -125,27 +124,65 @@ function makeForm() {
 
             var actualImg = document.createElement("img");
             actualImg.className = "characterDisplay";
+            actualImg.src = "images/plus.svg";
             label.appendChild(actualImg);
 
             var grid = document.createElement("div");
             grid.className = "characterInputGrid";
             characterHolder.appendChild(grid);
 
-            for(var k = 0; k < 6; ++k) {
-                var inputHolder = document.createElement("div");
-                inputHolder.className = "characterInput";
-                grid.appendChild(inputHolder);
-
-                var characterText = document.createElement("p");
-                characterText.innerText = "test P"
-                inputHolder.appendChild(characterText);
-
-                var characterInput = document.createElement("input");
-                inputHolder.appendChild(characterInput);
-            }
-
+            createPlayerInput(grid, "Name");
+            createPlayerInput(grid, "Age");
+            createPlayerDropdown(grid, "EyeSight", "Good", "Fair", "Poor");
+            createPlayerInput(grid, "Weight");
+            createPlayerInput(grid, "Height");
+            createPlayerDropdown(grid, "Gender", "M", "F", "?");
         }
     }
+}
+
+function createPlayerInput(grid, label) {
+    var inputHolder = document.createElement("div");
+        inputHolder.className = "characterInput";
+        grid.appendChild(inputHolder);
+
+        var characterText = document.createElement("p");
+        characterText.innerText = label
+        inputHolder.appendChild(characterText);
+
+        var characterInput = document.createElement("input");
+        inputHolder.appendChild(characterInput);
+}
+
+function createPlayerDropdown(grid, label, ...options) {
+    var inputHolder = document.createElement("div");
+        inputHolder.className = "characterInput";
+        grid.appendChild(inputHolder);
+
+        var characterText = document.createElement("p");
+        characterText.innerText = label
+        inputHolder.appendChild(characterText);
+
+        var characterDropdown = document.createElement("div");
+        characterDropdown.className = "characterDropdown";
+        inputHolder.appendChild(characterDropdown);
+
+        var characterDropdownText = document.createElement("p");
+        characterDropdown.appendChild(characterDropdownText);
+
+        var dropDownHolder = document.createElement("div");
+        dropDownHolder.className = "characterDropdownContainer";
+        characterDropdown.appendChild(dropDownHolder);
+
+        options.forEach(function(o) {
+            op = document.createElement("div");
+            op.innerText = o;
+            op.onmousedown = () => {
+                characterDropdownText.textContent = o
+            };
+            dropDownHolder.appendChild(op);
+        });
+
 }
 
 function doWithImage(e) {
