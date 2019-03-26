@@ -1,0 +1,46 @@
+.formMakerSettings {
+    max-height: 50px;
+}
+
+.formMakerSettings p {
+    position: relative;
+    margin: 5px;
+
+    color: #cc6528;
+    font-size: 20px;
+    font-family: sans-serif;
+    text-align: right;
+    height: calc(100% - 10px);
+    vertical-align: text-bottom;
+    line-height: 30px;
+}
+
+.formMakerSettings input {
+    position: relative;
+    margin: 5px;
+    width: min-content;
+    height: calc(100% - 10px);
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    border: 0px;
+    border-radius: 5px;
+}
+
+.formMakerSettings input:invalid {
+    background-color: red;
+}
+
+.formMakerSettings button {
+    position: relative;
+    margin: 5px;
+    width: max-content;
+    height: calc(100% - 10px);
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    border: 0px;
+    border-radius: 5px;
+}

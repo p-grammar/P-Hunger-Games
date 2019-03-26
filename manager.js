@@ -7,9 +7,9 @@ var header;
 var headerText;
 var content;
 
-var superHolder;
-var topHolder;
-var districtsHolder;
+var settingsSuper;
+var formMakerSettings;
+var characterSettings;
 
 /*IMPORTANT */
 var __charactersDatasheet;
@@ -47,19 +47,19 @@ content = document.createElement("div");
 content.className = "content";
 body.appendChild(content);
 
-superHolder = document.createElement("div");
-superHolder.className = "superHolder";
-content.appendChild(superHolder);
+settingsSuper = document.createElement("div");
+settingsSuper.className = "settingsSuper";
+content.appendChild(settingsSuper);
 
-topHolder = document.createElement("form");
-topHolder.className = "topHolder";
-topHolder.style.gridTemplateColumns = "minmax(min-content, max-content) min-content minmax(min-content, max-content) min-content max-content";
-topHolder.style.gridTemplateRows = "min-content";
-superHolder.appendChild(topHolder);
+formMakerSettings = document.createElement("div");
+formMakerSettings.className = "settings formMakerSettings";
+formMakerSettings.style.gridTemplateColumns = "minmax(min-content, max-content) min-content minmax(min-content, max-content) min-content max-content";
+formMakerSettings.style.gridTemplateRows = "min-content";
+settingsSuper.appendChild(formMakerSettings);
 
-districtsHolder = document.createElement("form");
-districtsHolder.className = "subHolder";
-superHolder.appendChild(districtsHolder);
+characterSettings = document.createElement("div");
+characterSettings.className = "settings characterSettings";
+settingsSuper.appendChild(characterSettings);
 
 /*
  * put stuff in top holder
@@ -67,31 +67,40 @@ superHolder.appendChild(districtsHolder);
 
 var text = document.createElement("p");
 text.innerText = "Number of Districts";
-topHolder.appendChild(text);
+formMakerSettings.appendChild(text);
 
 var numberDistrictsInput = document.createElement("input");
 numberDistrictsInput.type = "number";
 numberDistrictsInput.value = "2";
 numberDistrictsInput.min = 1;
 numberDistrictsInput.max = MAX_DISTRICTS;
-topHolder.appendChild(numberDistrictsInput);
+formMakerSettings.appendChild(numberDistrictsInput);
 
 var text2 = document.createElement("p");
 text2.innerText = "Tributes per District";
-topHolder.appendChild(text2);
+formMakerSettings.appendChild(text2);
 
 var perDistrictsInput = document.createElement("input");
 perDistrictsInput.type = "number";
 perDistrictsInput.value = "2";
 perDistrictsInput.min = 1;
 perDistrictsInput.max = MAX_PER_DISTRICT;
-topHolder.appendChild(perDistrictsInput);
+formMakerSettings.appendChild(perDistrictsInput);
 
 var makeFormButton = document.createElement("button");
 makeFormButton.innerText = "Make Form";
 makeFormButton.type = "button";
 makeFormButton.onclick = makeForm;
-topHolder.appendChild(makeFormButton);
+formMakerSettings.appendChild(makeFormButton);
+
+/*
+ * world holder
+ */
+worldSettings = document.createElement("div");
+worldSettings.className = "settings worldSettings"
+settingsSuper.appendChild(worldSettings);
+
+//^^^^^
 
 function makeForm() {
     var districts = numberDistrictsInput.value;
@@ -114,15 +123,15 @@ function makeForm() {
     //
     //delete the form before creating a new one
     //
-    while (districtsHolder.hasChildNodes()) {
-        districtsHolder.removeChild(districtsHolder.lastChild);
+    while (characterSettings.hasChildNodes()) {
+        characterSettings.removeChild(characterSettings.lastChild);
     }
 
     for(var i = 0; i < districts; ++i) {
 
         var districtInputContainer = document.createElement("div");
         districtInputContainer.className = "districtHolder"
-        districtsHolder.appendChild(districtInputContainer);
+        characterSettings.appendChild(districtInputContainer);
         var districtText = document.createElement("p");
         districtText.innerText = "District " + (i + 1);
         districtInputContainer.appendChild(districtText); 
@@ -152,16 +161,28 @@ function makeForm() {
             uploadButton.className = "characterImage";
             uploadButton.addEventListener("change", function() {
                 doWithImage(this, (ret) => {
+                    let tempImg = document.getElementById(this.labelID).lastChild;
                     __charactersDatasheet[this.selfIndex].aliveImage = ret;
-                    document.getElementById(this.labelID).lastChild.src = ret;
+        
+                    tempImg.onload = () => {
+                        let imgWidth  = tempImg.naturalWidth;
+                        let imgHeight = tempImg.naturalHeight;
+                        console.log(imgWidth + " " + imgHeight)
+                        if(imgWidth > imgHeight) {
+                            tempImg.className = "characterDisplayWide";
+                            let percent = ( ((imgWidth / 2) - (imgHeight / 2)) / imgWidth ) * 100;
+                            tempImg.style.transform = "translateX(-" + percent + "%)";
+                        } else {
+                            tempImg.className = "characterDisplayTall";
+                            let percent = ( ((imgHeight / 2) - (imgWidth / 2)) / imgHeight ) * 100;
+                            tempImg.style.transform = "translateY(-" + percent + "%)";
+                        }
+                    }
 
-                    __charactersDatasheet[this.selfIndex].params.forEach((p) => {
-                            console.log(p);
-                    });
-
+                    tempImg.src = ret;
                 });
             });
-            districtsHolder.appendChild(uploadButton);
+            characterSettings.appendChild(uploadButton);
             //label
             var label = document.createElement("label");
             label.htmlFor = (uploadID);
@@ -182,11 +203,28 @@ function makeForm() {
             deadUploadButton.className = "characterImage";
             deadUploadButton.addEventListener("change", function() {
                 doWithImage(this, (ret) => {
+                    let tempImg = document.getElementById(this.labelID).lastChild;
                     __charactersDatasheet[this.selfIndex].deadImage = ret;
-                    document.getElementById(this.labelID).lastChild.src = ret;
+        
+                    tempImg.onload = () => {
+                        let imgWidth  = tempImg.naturalWidth;
+                        let imgHeight = tempImg.naturalHeight;
+                        console.log(imgWidth + " " + imgHeight);
+                        if(imgWidth > imgHeight) {
+                            tempImg.className = "characterDisplayWide";
+                            let percent = ( ((imgWidth / 2) - (imgHeight / 2)) / imgWidth ) * 100;
+                            tempImg.style.transform = "translateX(-" + percent + "%)";
+                        } else {
+                            tempImg.className = "characterDisplayTall";
+                            let percent = ( ((imgHeight / 2) - (imgWidth / 2)) / imgHeight ) * 100;
+                            tempImg.style.transform = "translateY(-" + percent + "%)";
+                        }
+                    }
+
+                    tempImg.src = ret;
                 });
             });
-            districtsHolder.appendChild(deadUploadButton);
+            characterSettings.appendChild(deadUploadButton);
             //label
             var deadLabel = document.createElement("label");
             deadLabel.htmlFor = (deadUploadID);

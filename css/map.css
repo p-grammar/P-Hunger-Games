@@ -1,0 +1,177 @@
+.mapSuperSuper {
+    position: fixed;
+    right: 15px;
+    bottom: 5px;
+    width: auto;
+    height: auto;
+}
+
+/* HIDE BUTTON VVVVVVVVVVVVV */
+.mapHideButtonContainer {
+    display: block;
+    position: absolute;
+    background-color: rgba(0,0,0,0);
+    width: 50px;
+    height: 105px;
+    z-index: 100;
+    right: 0px;
+    top: -55px;
+    z-index: -10;
+}
+
+.mapHideButton {
+    display: block;
+    position: absolute;
+    background-color: lightgray;
+    width: 50px;
+    height: 50px;
+    border-radius: 5px;
+    z-index: 100;
+    bottom: 0px;
+    z-index: -10;
+    cursor: pointer;
+
+    text-align: center;
+    font-family: sans-serif;
+    line-height: 50px;
+}
+/*HIDE BUTTON ^^^^^^^^^^^^^^^*/
+
+.mapSwitchContainer {
+    display: block;
+    position: absolute;
+    background-color: rgba(0,0,0,0);
+    width: 150px;
+    height: 105px;
+    z-index: 100;
+    right: 55px;
+    top: -55px;
+    z-index: -10;
+}
+
+.mapSwitch {
+    position: absolute;
+    width: 150px;
+    height: 50px;
+    border-radius: 5px;
+    overflow: hidden;
+    bottom: 0px;
+    display: block;
+    background-color: darkorange;
+}
+
+.mapSwitch div {
+    position: absolute;
+    display: block;
+    width: 75px;
+    height: 50px;
+    border-radius: 5px;
+    background-color: lightgray; 
+    z-index: 100;
+    cursor: pointer;
+}
+
+@keyframes switchColorChange {
+    0% {background-color: darkorange}
+    100% {background-color: lightskyblue}
+}
+
+.mapSwitchRight {
+    background-color: lightskyblue;
+    animation-name: switchColorChange;
+    animation-direction: normal;
+    animation-duration: 0.5s;
+}
+
+.mapSwitchLeft {
+    background-color: darkorange;
+    animation-name: switchColorChange;
+    animation-direction: reverse;
+    animation-duration: 0.5s;
+}
+
+@keyframes switchMove {
+    0% {left: 0px}
+    100% {left: 75px}
+}
+
+.switchMoveRight {
+    left: 75px;
+    animation-name: switchMove;
+    animation-direction: normal;
+    animation-duration: 0.5s;
+    animation-timing-function: ease-in-out;
+}
+
+.switchMoveLeft {
+    left: 0px;
+    animation-name: switchMove;
+    animation-direction: reverse;
+    animation-duration: 0.5s;
+    animation-timing-function: ease-in-out;
+}
+
+@keyframes buttonComeup {
+    0% {bottom: 0px}
+    100% {bottom: 55px}
+}
+
+.mapComeup {
+    animation-name: buttonComeup;
+    animation-duration: 0.5s;
+    animation-direction: normal;
+    bottom: 55px;
+}
+
+.mapComedown {
+    animation-name: buttonComeup;
+    animation-duration: 0.5s;
+    animation-direction: reverse;
+    bottom: 0px;
+}
+
+.mapSwitch p {
+    display: block;
+    position: absolute;
+    width: 75px;
+    height: 50px;
+    line-height: 50px;
+    margin: 0px;
+    right: 0px;
+    text-align: center;
+    font-family: sans-serif;
+}
+
+.mapSwitch p:first-child {
+    left: 0;
+}
+
+.mapSwitch p:last-child {
+    right: 0;
+}
+
+.mapSuper {
+    position: relative;
+    right: 0px;
+    bottom: 0px;
+    width: fit-content;
+    height: fit-content;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* to add to map super to make is invis */
+.mapSuperHidden {
+    width: 0px;
+    height: 0px;
+}
+
+.map {
+   position: relative;
+}
+
+.player {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+}
