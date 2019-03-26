@@ -103,8 +103,8 @@ settingsSuper.appendChild(worldSettings);
 //^^^^^
 
 function makeForm() {
-    var districts = numberDistrictsInput.value;
-    var per = perDistrictsInput.value;
+    let districts = numberDistrictsInput.value;
+    let per = perDistrictsInput.value;
 
     if(districts < 1) {
         districts = 1;
@@ -127,16 +127,21 @@ function makeForm() {
         characterSettings.removeChild(characterSettings.lastChild);
     }
 
-    for(var i = 0; i < districts; ++i) {
+    for(let i = 0; i < districts; ++i) {
 
-        var districtInputContainer = document.createElement("div");
+        let districtInputContainer = document.createElement("div");
         districtInputContainer.className = "districtHolder"
+<<<<<<< HEAD
         characterSettings.appendChild(districtInputContainer);
         var districtText = document.createElement("p");
+=======
+        districtsHolder.appendChild(districtInputContainer);
+        let districtText = document.createElement("p");
+>>>>>>> d5a98b1e46ea53dc6b9aac6a8d1bae9ccf5a618a
         districtText.innerText = "District " + (i + 1);
         districtInputContainer.appendChild(districtText); 
 
-        for(var j = 0; j < per; ++j) {
+        for(let j = 0; j < per; ++j) {
 
             var uploadID = "U"+i+j;
             var labelID = "L"+i+j;
