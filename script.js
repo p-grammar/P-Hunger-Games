@@ -1,3 +1,5 @@
+//var PF = require('pathfinding');
+
 /* eslint-disable no-undef */
 class Biome {
     constructor(n, c) {
@@ -30,7 +32,7 @@ var biomes = [
     new Biome("desert", "#eaa983")
 ]
 
-var players = [new Player(), new Player()];
+var players = [new Player(), new Player(), new Player(), new Player(), new Player(), new Player(), new Player(), new Player()];
 
 var mapSuperSuper = document.createElement("div");
 mapSuperSuper.className = "mapSuperSuper";
@@ -127,6 +129,8 @@ var mapSuperContainer = document.createElement("div");
 mapSuperContainer.className = "mapSuper";
 mapSuperSuper.appendChild(mapSuperContainer);
 
+var MAP_SIZE = 30;
+
 function animationEnable(node, enable, ...disables) {
     node.preventDefault;
     node.classList.remove(enable);
@@ -143,13 +147,16 @@ var frameCounter = 0;
 
 var eventQueue = [];
 
+var worldGrid;
+
 function main() {
     beginGames();
 }
 
 function beginGames()
 {
-    world = worldGen(30, biomes, 9);
+    world = worldGen(MAP_SIZE, biomes, 9);
+    worldGrid = new PF.Grid(MAP_SIZE + 1, MAP_SIZE + 1);
     printWorld(world);
 
     setupPlayers();
@@ -159,14 +166,26 @@ function beginGames()
 
 function setupPlayers()
 {
-    players.forEach(function(player)
+    var radius = players.length * 4;
+    players.forEach(function(player, index)
     {
+        // cornicopulate sans
+        player.location = {
+            x: (((MAP_SIZE + MAP_SIZE + 1) * 10) / 2) + radius * Math.cos(degToRad(index * 45)),
+            y: (((MAP_SIZE + MAP_SIZE + 1) * 10) / 2) + radius * Math.sin(degToRad(index * 45))
+        };
         mapSuperContainer.appendChild(player.icon);
     });
 }
 
+function degToRad(degrees)
+{
+    return degrees * (Math.PI/180);
+}
+
 function update()
 {
+    // time
     frameCounter++;
     if (frameCounter >= 60)
     {
@@ -182,11 +201,19 @@ function update()
     }
 
     players.forEach(function(player) {
-        player.location.x++;
-        if (player.location.x > 500)
-            player.location.x = 0;
+        // player events
+        player.eventQueue.forEach(function(event) {
+            if (event.canExecute())
+            {
+                event.execute();
+                eventQueue = eventQueue.filter(e => e !== event);
+            }
+        })
+        // ai
+        player.step();
     });
 
+    // global events
     eventQueue.forEach(function(event) {
         if (event.canExecute())
         {
@@ -276,14 +303,13 @@ function printWorld(w) {
             mapContianer.appendChild(item);
         }
     }
-
 }
 
 function paintEntities()
 {
     players.forEach(function(player) {
-        player.icon.style.left = player.location.x + "px";
-        player.icon.style.top = player.location.y + "px";
+        player.icon.style.left = "" + player.location.x + "px";
+        player.icon.style.top = "" + player.location.y + "px";
     });
 }
 
