@@ -31,7 +31,7 @@ class Player
 
         // Stats
         this.strength = 5;
-        this.speed = 5;
+        this.speed = 1;
         this.intelligence = 5;
         this.constitution = 5;
         this.charisma = 5;
@@ -53,5 +53,34 @@ class Player
         this.icon = document.createElement("img");
         this.icon.className = "player";
         this.icon.src = "images/sans.png";
+
+        this.eventQueue = [];
+        this.finder = PF.AStarFinder();
+        this.target = [];
     }
+
+    step()
+    {
+       // this.location.x += Math.random() * this.speed;
+       // this.location.y += Math.random() * this.speed;
+        if (this.target === null)
+        {
+            this.pathFind(getRandomInt(0, 20), getRandomInt(0, 20));
+        }
+        else
+        {
+            //this.location = this.target.pop();
+        }   
+    }
+
+    pathfind(destination)
+    {
+        this.target = this.finder.findPath(location.x, location.y, 20, 20, worldGrid);
+    }
+}
+
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }

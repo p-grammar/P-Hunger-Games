@@ -4,7 +4,8 @@
   "description": "candlegaymes",
   "main": "script.js",
   "dependencies": {
-    "mainloop.js": "^1.0.4"
+    "mainloop.js": "^1.0.4",
+    "pathfinding": "^0.4.18"
   },
   "devDependencies": {
     "eslint": "^5.15.3",
@@ -19,10 +20,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/p-grammar/P-Hunger-Games.git"
-  },
+  "repository": "git+https://github.com/p-grammar/P-Hunger-Games.git",
   "author": "clab & ebet",
   "license": "MIT",
   "bugs": {
