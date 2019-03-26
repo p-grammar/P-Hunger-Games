@@ -1,20 +1,155 @@
 .worldSettings {
-    height: 200px;
+    /* uwu */
+}
 
+.worldSettingsGrid {
+    margin: 5px;
     grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: min-content min-content min-content;
+    grid-template-rows: min-content min-content min-content min-content;
+    display: grid;
 }
 
 .worldInputHolder {
-    display: block;
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    grid-column-gap: 5px;
     width: 100%;
     height: 100%;
 }
 
 .worldInputHolder p {
+    width: 100px;
+    line-height: 50px;
+    margin: 0px;
+
+    font-family: sans-serif;
+    color: #cc6528;
+    text-align: right;
 
 }
 
 .worldInputHolder input {
+    box-sizing: border-box;
+    width: 100%;
+    margin-top: 12.5px;
+    height: 25px;
+    border: 0px;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.worldInputHolder input:hover {
+    outline: none;
+}
+
+.worldEventHolder {
+    display: grid;
+
+    grid-template-columns: 50px 1fr 50px;
+    grid-template-rows: 50px 1fr;
+    grid-gap: 5px;
+
+    width: 100%;
+    height: auto;
+
+    grid-column-start: 1;
+    grid-column-end: 4;
+
+    box-sizing: border-box;
+    padding: 5px;
+    border: 5px solid #cc6528;
+    border-radius: 15px;
+}
+
+.worldEventHolder p {
+    line-height: 50px;
+    padding: 0px;
+    margin: 0px;
+    text-align: center;
+    font-family: sans-serif;
+    color: #cc6528;
+}
+
+.eventRandomButton {
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.worldRandomButton img {
+    width: 100%;
+    height: 100%;
+}
+
+.worldEventList {
+    grid-column-start: 1;
+    grid-column-end: 4;
+}
+
+.worldEventListItem {
+    width: 100%;
+    height: auto;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: 50px 1fr;
+    grid-column-gap: 5px;
+}
+
+.worldEventListItem:not(:first-child) {
+    margin-top: 5px;
+}
+
+.dayButton {
+    background-color: #cc6528;
+    width: 100%;
+    height: 25px;
+    border-radius: 5px;
+    overflow: hidden;
+    cursor: pointer;
+
+    color: white;
+    font-family: sans-serif;
+    line-height: 25px;
+    text-align: center;
+}
+
+/* also has base dayButton class */
+.dayAddButton {
+    height: 50px;
+}
+
+.dayAddButton img {
+    width: 100%;
+    height: 100%;
+}
+
+.eventDropdown {
+    width: 100%;
+    background-color: white;
+    border-radius: 5px;
+}
+
+.makeWorldButton {
+    margin-top: 5px;
+    width: fit-content;
+    height: 25px;
+    background-color: lightgray;
+    font-family: sans-serif;
+    margin-left: auto;
+    margin-right: auto;
+    grid-column: 2;
+
+    line-height: 25px;
+    text-align: center;
     
+    padding: 0px;
+    padding-left: 10px;
+    padding-right: 10px;
+
+    border-radius: 5px;
+    border: 0px;
+
+    cursor: pointer;
 }

@@ -96,10 +96,115 @@ formMakerSettings.appendChild(makeFormButton);
 /*
  * world holder
  */
-worldSettings = document.createElement("div");
-worldSettings.className = "settings worldSettings"
+var worldSettings = document.createElement("div");
+worldSettings.className = "settings worldSettings";
 settingsSuper.appendChild(worldSettings);
 
+var worldSettingsGrid = document.createElement("div");
+worldSettingsGrid.className = "worldSettingsGrid";
+worldSettings.appendChild(worldSettingsGrid);
+
+for(let i = 0; i < 6; ++i) {
+    let worldInputHolder = document.createElement("div");
+    worldInputHolder.className = "worldInputHolder";
+    worldSettingsGrid.appendChild(worldInputHolder);
+
+    let text = document.createElement("p");
+    text.textContent = "what's up P"
+    worldInputHolder.appendChild(text);
+
+    let input = document.createElement("input");
+    worldInputHolder.appendChild(input);
+}
+
+var worldEventHolder = document.createElement("div");
+worldEventHolder.className = "worldEventHolder";
+worldSettingsGrid.appendChild(worldEventHolder);
+
+let dayLabel = document.createElement("p");
+dayLabel.textContent = "Day";
+worldEventHolder.appendChild(dayLabel);
+
+let eventLabel = document.createElement("p");
+eventLabel.textContent = "Event";
+worldEventHolder.appendChild(eventLabel);
+
+var eventRandomButton = document.createElement("div");
+eventRandomButton.className = "eventRandomButton";
+worldEventHolder.appendChild(eventRandomButton);
+
+let dieImage = document.createElement("img");
+dieImage.src = "images/die.svg"
+eventRandomButton.appendChild(dieImage);
+
+var eventList = document.createElement("div");
+eventList.className = "worldEventList";
+worldEventHolder.appendChild(eventList);
+
+var makeWorldButton = document.createElement("button");
+makeWorldButton.className = "makeWorldButton";
+makeWorldButton.innerText = "Make World";
+worldSettingsGrid.appendChild(makeWorldButton);
+
+var listItem = document.createElement("div");
+listItem.className = "worldEventListItem";
+eventList.appendChild(listItem);
+
+var addButton = document.createElement("div");
+addButton.classList = "dayButton dayAddButton";
+addButton.onclick = () => {
+    createEventListItem();
+}
+listItem.appendChild(addButton);
+
+var addButtonImg = document.createElement("img");
+addButtonImg.src = "images/plus.svg";
+addButton.appendChild(addButtonImg);
+
+var numEvents = 0;
+
+createEventListItem();
+createEventListItem();
+
+function createEventListItem() {
+    if(numEvents < 10) {
+        var newListItem = document.createElement("div");
+        newListItem.className = "worldEventListItem";
+        eventList.insertBefore(newListItem, listItem);
+
+        /* add a day number to the day button */
+        /* +1 for 1 index on displayyyyyyyyyyyyy */
+        var addButton = document.createElement("div");
+        addButton.selfIndex = numEvents;
+        addButton.classList = "dayButton";
+        addButton.textContent = (numEvents + 1);
+        addButton.onclick = () => {
+            removeEventListItem(addButton.selfIndex);
+        }
+        newListItem.appendChild(addButton);
+
+        var eventDropdown = document.createElement("div");
+        eventDropdown.className = "eventDropdown";
+        newListItem.appendChild(eventDropdown);
+
+        ++numEvents;
+    } else {
+        alert("you can only have 10 event days");
+    }
+}
+
+function removeEventListItem(index) {
+    console.log("kek | " + index);
+    eventList.removeChild(eventList.childNodes[index]);
+    for(let i = index; i < eventList.childElementCount - 1; ++i) {
+        console.log(i);
+        
+        --eventList.childNodes[i].firstChild.selfIndex;
+        --eventList.childNodes[i].firstChild.innerText;
+        
+    }
+    --numEvents;
+}
 //^^^^^
 
 function makeForm() {
@@ -129,15 +234,10 @@ function makeForm() {
 
     for(let i = 0; i < districts; ++i) {
 
-        let districtInputContainer = document.createElement("div");
+        var districtInputContainer = document.createElement("div");
         districtInputContainer.className = "districtHolder"
-<<<<<<< HEAD
         characterSettings.appendChild(districtInputContainer);
         var districtText = document.createElement("p");
-=======
-        districtsHolder.appendChild(districtInputContainer);
-        let districtText = document.createElement("p");
->>>>>>> d5a98b1e46ea53dc6b9aac6a8d1bae9ccf5a618a
         districtText.innerText = "District " + (i + 1);
         districtInputContainer.appendChild(districtText); 
 

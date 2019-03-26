@@ -314,3 +314,7 @@ function paintEntities()
 }
 
 main();
+
+function divToImage() {
+    
+}

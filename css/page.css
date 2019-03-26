@@ -59,6 +59,8 @@ body {
  .settingsSuper {
     position: relative;
     width: calc(100% - 10px);
+    min-width: 700px;
+    max-width: 1000px;
     height: auto;
     margin-left: 5px;
     margin-top: 5px;

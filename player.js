@@ -77,7 +77,7 @@ class Player
 
     pathFind(destX, destY)
     {
-        console.log(this.location)
+        //console.log(this.location)
         this.target = this.finder.findPath(this.location.x, this.location.y, destX, destY, window.worldGrid);
     }
 }
