@@ -55,7 +55,7 @@ class Player
         this.icon.src = "images/sans.png";
 
         this.eventQueue = [];
-        this.finder = PF.AStarFinder();
+        this.finder = new PF.AStarFinder();
         this.target = [];
     }
 
@@ -63,19 +63,22 @@ class Player
     {
        // this.location.x += Math.random() * this.speed;
        // this.location.y += Math.random() * this.speed;
-        if (this.target === null)
+
+        if (this.target.length === 0)
         {
-            this.pathFind(getRandomInt(0, 20), getRandomInt(0, 20));
+            this.pathFind(getRandomInt(0, 5), getRandomInt(0, 5));
         }
         else
         {
-            //this.location = this.target.pop();
+            var nextNode = this.target.pop();
+            this.location = { x: nextNode[0], y: nextNode[1] };
         }   
     }
 
-    pathfind(destination)
+    pathFind(destX, destY)
     {
-        this.target = this.finder.findPath(location.x, location.y, 20, 20, worldGrid);
+        console.log(this.location)
+        this.target = this.finder.findPath(this.location.x, this.location.y, destX, destY, window.worldGrid);
     }
 }
 

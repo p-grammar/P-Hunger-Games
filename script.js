@@ -147,7 +147,7 @@ var frameCounter = 0;
 
 var eventQueue = [];
 
-var worldGrid;
+window.worldGrid;
 
 function main() {
     beginGames();
@@ -156,7 +156,7 @@ function main() {
 function beginGames()
 {
     world = worldGen(MAP_SIZE, biomes, 9);
-    worldGrid = new PF.Grid(MAP_SIZE + 1, MAP_SIZE + 1);
+    worldGrid = new PF.Grid(MAP_SIZE * 2 + 1, MAP_SIZE * 2 + 1);
     printWorld(world);
 
     setupPlayers();
@@ -166,13 +166,13 @@ function beginGames()
 
 function setupPlayers()
 {
-    var radius = players.length * 4;
+    let radius = players.length * .5;
     players.forEach(function(player, index)
     {
         // cornicopulate sans
         player.location = {
-            x: (((MAP_SIZE + MAP_SIZE + 1) * 10) / 2) + radius * Math.cos(degToRad(index * 45)),
-            y: (((MAP_SIZE + MAP_SIZE + 1) * 10) / 2) + radius * Math.sin(degToRad(index * 45))
+            x: Math.trunc((((MAP_SIZE * 2 + 1)) / 2) + radius * Math.cos(degToRad(index * 45))),
+            y: Math.trunc((((MAP_SIZE * 2 + 1)) / 2) + radius * Math.sin(degToRad(index * 45)))
         };
         mapSuperContainer.appendChild(player.icon);
     });
@@ -229,7 +229,7 @@ function draw()
 }
 
 function vToC(value) {
-    var c = value * 255;
+    let c = value * 255;
     if(c > 255) {
         c = 255;
     }
@@ -237,14 +237,14 @@ function vToC(value) {
 }
 
 function worldGen(radius, biomes, sharpness) {
-    var size = radius * 2 + 1;
-    var superSize = Math.ceil(size / sharpness) + 2;
+    let size = radius * 2 + 1;
+    let superSize = Math.ceil(size / sharpness) + 2;
 
-    var chunks = [...Array(size)].map(e => Array(size));
-    var superChunks = [...Array(superSize)].map(e => Array(superSize));
+    let chunks = [...Array(size)].map(() => Array(size));
+    let superChunks = [...Array(superSize)].map(() => Array(superSize));
 
-    for(var j = 0; j < superSize; ++j) {
-        for(var i = 0; i < superSize; ++i) {
+    for(let j = 0; j < superSize; ++j) {
+        for(let i = 0; i < superSize; ++i) {
             if (j > superSize / 2 - 1 && j < superSize / 2 + 1 && i > superSize / 2 - 1 && i < superSize / 2 + 1)
                 superChunks[i][j] = [0, 0, -22];
             else 
@@ -252,21 +252,21 @@ function worldGen(radius, biomes, sharpness) {
         }
     }
 
-    for(var j = 0; j < size; ++j) {
-        var superY = Math.floor(j / sharpness) + 1;
-        var subY = (j % sharpness) / sharpness;
-        for(var i = 0; i < size; ++i) {
-            var superX = Math.floor(i / sharpness) + 1;
-            var subX = (i % sharpness) / sharpness;
+    for(let j = 0; j < size; ++j) {
+        let superY = Math.floor(j / sharpness) + 1;
+        let subY = (j % sharpness) / sharpness;
+        for(let i = 0; i < size; ++i) {
+            let superX = Math.floor(i / sharpness) + 1;
+            let subX = (i % sharpness) / sharpness;
 
-            var value = 0;
-            for(var k = -1; k < 2; ++k) {
-                for(var r = -1; r < 2; ++r) {
-                    var tempX = (subX - k) - (superChunks[superX + k][superY + r][0]);
-                    var tempY = (subY - r) - (superChunks[superX + k][superY + r][1]);
-                    var tempZ = (superChunks[superX + k][superY + r][2]);
+            let value = 0;
+            for(let k = -1; k < 2; ++k) {
+                for(let r = -1; r < 2; ++r) {
+                    let tempX = (subX - k) - (superChunks[superX + k][superY + r][0]);
+                    let tempY = (subY - r) - (superChunks[superX + k][superY + r][1]);
+                    let tempZ = (superChunks[superX + k][superY + r][2]);
 
-                    var tot = (1 - ((tempX * tempX) + (tempY * tempY) + (tempZ * tempZ))) / 2;
+                    let tot = (1 - ((tempX * tempX) + (tempY * tempY) + (tempZ * tempZ))) / 2;
                     if(tot < 0) {
                         tot = 0;
                     }
@@ -287,16 +287,16 @@ function worldGen(radius, biomes, sharpness) {
 }
 
 function printWorld(w) {
-    var mapContianer = document.createElement("div");
+    let mapContianer = document.createElement("div");
     mapContianer.className = "map";
     mapContianer.style.display = "grid";
     mapSuperContainer.appendChild(mapContianer);
     mapContianer.style.gridTemplateColumns = "10px ".repeat(w.width);
     mapContianer.style.gridTemplateRows = "10px ".repeat(w.height);
-    for(var j = 0; j < w.width; ++j) {
-        for(var i = 0; i < w.height; ++i) {
-            var item = document.createElement("div");
-            var color = w.chunks[i][j].biome.color;
+    for(let j = 0; j < w.width; ++j) {
+        for(let i = 0; i < w.height; ++i) {
+            let item = document.createElement("div");
+            let color = w.chunks[i][j].biome.color;
             item.style.backgroundColor = color;
             item.style.width = "10px";
             item.style.height = "10px";
@@ -308,8 +308,8 @@ function printWorld(w) {
 function paintEntities()
 {
     players.forEach(function(player) {
-        player.icon.style.left = "" + player.location.x + "px";
-        player.icon.style.top = "" + player.location.y + "px";
+        player.icon.style.left = "" + player.location.x * 10 + "px";
+        player.icon.style.top = "" + player.location.y * 10 + "px";
     });
 }
 

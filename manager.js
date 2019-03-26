@@ -76,8 +76,8 @@ topHolder.appendChild(makeFormButton);
 */
 
 function makeForm() {
-    var districts = numberDistrictsInput.value;
-    var per = perDistrictsInput.value;
+    let districts = numberDistrictsInput.value;
+    let per = perDistrictsInput.value;
 
     if(districts < 1) {
         districts = 1;
@@ -95,39 +95,39 @@ function makeForm() {
         districtsHolder.removeChild(districtsHolder.lastChild);
     }
 
-    for(var i = 0; i < districts; ++i) {
+    for(let i = 0; i < districts; ++i) {
 
-        var districtInputContainer = document.createElement("div");
+        let districtInputContainer = document.createElement("div");
         districtInputContainer.className = "districtHolder"
         districtsHolder.appendChild(districtInputContainer);
-        var districtText = document.createElement("p");
+        let districtText = document.createElement("p");
         districtText.innerText = "District " + (i + 1);
         districtInputContainer.appendChild(districtText); 
 
-        for(var j = 0; j < per; ++j) {
+        for(let j = 0; j < per; ++j) {
 
-            var characterHolder = document.createElement("div");
+            let characterHolder = document.createElement("div");
             characterHolder.className = "characterHolder";
             districtInputContainer.appendChild(characterHolder);
 
-            var uploadButton = document.createElement("input");
+            let uploadButton = document.createElement("input");
             uploadButton.type = "file";
             uploadButton.id = (i+""+j);
             uploadButton.className = "characterImage";
             uploadButton.addEventListener("change", doWithImage);
             districtsHolder.appendChild(uploadButton);
 
-            var label = document.createElement("label");
+            let label = document.createElement("label");
             label.htmlFor = (i+""+j);
             label.id = (i+""+j+"L");
             characterHolder.appendChild(label);
 
-            var actualImg = document.createElement("img");
+            let actualImg = document.createElement("img");
             actualImg.className = "characterDisplay";
             actualImg.src = "images/plus.svg";
             label.appendChild(actualImg);
 
-            var grid = document.createElement("div");
+            let grid = document.createElement("div");
             grid.className = "characterInputGrid";
             characterHolder.appendChild(grid);
 
@@ -142,35 +142,35 @@ function makeForm() {
 }
 
 function createPlayerInput(grid, label) {
-    var inputHolder = document.createElement("div");
+    let inputHolder = document.createElement("div");
         inputHolder.className = "characterInput";
         grid.appendChild(inputHolder);
 
-        var characterText = document.createElement("p");
+        let characterText = document.createElement("p");
         characterText.innerText = label
         inputHolder.appendChild(characterText);
 
-        var characterInput = document.createElement("input");
+        let characterInput = document.createElement("input");
         inputHolder.appendChild(characterInput);
 }
 
 function createPlayerDropdown(grid, label, ...options) {
-    var inputHolder = document.createElement("div");
+    let inputHolder = document.createElement("div");
         inputHolder.className = "characterInput";
         grid.appendChild(inputHolder);
 
-        var characterText = document.createElement("p");
+        let characterText = document.createElement("p");
         characterText.innerText = label
         inputHolder.appendChild(characterText);
 
-        var characterDropdown = document.createElement("div");
+        let characterDropdown = document.createElement("div");
         characterDropdown.className = "characterDropdown";
         inputHolder.appendChild(characterDropdown);
 
-        var characterDropdownText = document.createElement("p");
+        let characterDropdownText = document.createElement("p");
         characterDropdown.appendChild(characterDropdownText);
 
-        var dropDownHolder = document.createElement("div");
+        let dropDownHolder = document.createElement("div");
         dropDownHolder.className = "characterDropdownContainer";
         characterDropdown.appendChild(dropDownHolder);
 
@@ -186,9 +186,9 @@ function createPlayerDropdown(grid, label, ...options) {
 }
 
 function doWithImage(e) {
-    var file = this.files[0];
-    var findMe = this.id + "L";
-    var reader = new FileReader();
+    let file = this.files[0];
+    let findMe = this.id + "L";
+    let reader = new FileReader();
 
     reader.onload = function (e) {
         console.log(findMe + " | " + document.getElementById(findMe));
