@@ -11,6 +11,28 @@ var superHolder;
 var topHolder;
 var districtsHolder;
 
+/*IMPORTANT */
+var __charactersDatasheet;
+//
+
+class characterPassInfo {
+    constructor() {
+        this.aliveImage;
+        this.deadImage;
+        this.params;
+    }
+}
+
+const passInfoIndices = {
+    NAME: 0,
+    AGE: 1,
+    EYESIGHT: 2,
+    WEIGHT: 3,
+    HEIGHT: 4,
+    GENDER: 5,
+}
+
+
 body = document.body;
 
 header = document.createElement("div");
@@ -71,10 +93,6 @@ makeFormButton.type = "button";
 makeFormButton.onclick = makeForm;
 topHolder.appendChild(makeFormButton);
 
-/*
-
-*/
-
 function makeForm() {
     let districts = numberDistrictsInput.value;
     let per = perDistrictsInput.value;
@@ -91,6 +109,11 @@ function makeForm() {
         per = MAX_PER_DISTRICT;
     }
 
+    __charactersDatasheet = [];
+
+    //
+    //delete the form before creating a new one
+    //
     while (districtsHolder.hasChildNodes()) {
         districtsHolder.removeChild(districtsHolder.lastChild);
     }
@@ -106,95 +129,160 @@ function makeForm() {
 
         for(let j = 0; j < per; ++j) {
 
-            let characterHolder = document.createElement("div");
+            var uploadID = "U"+i+j;
+            var labelID = "L"+i+j;
+            var deadUploadID = "DU"+i+j;
+            var deadLabelID = "DL"+i+j;
+
+            var selfIndex = i * per + j;
+
+            __charactersDatasheet.push(new characterPassInfo());
+            __charactersDatasheet[selfIndex].params = [];
+
+            var characterHolder = document.createElement("div");
             characterHolder.className = "characterHolder";
             districtInputContainer.appendChild(characterHolder);
 
-            let uploadButton = document.createElement("input");
+            // make character upload picture button
+            var uploadButton = document.createElement("input");
             uploadButton.type = "file";
-            uploadButton.id = (i+""+j);
+            uploadButton.selfIndex = selfIndex;
+            uploadButton.labelID = labelID;
+            uploadButton.id = uploadID;
             uploadButton.className = "characterImage";
-            uploadButton.addEventListener("change", doWithImage);
+            uploadButton.addEventListener("change", function() {
+                doWithImage(this, (ret) => {
+                    __charactersDatasheet[this.selfIndex].aliveImage = ret;
+                    document.getElementById(this.labelID).lastChild.src = ret;
+
+                    __charactersDatasheet[this.selfIndex].params.forEach((p) => {
+                            console.log(p);
+                    });
+
+                });
+            });
             districtsHolder.appendChild(uploadButton);
-
-            let label = document.createElement("label");
-            label.htmlFor = (i+""+j);
-            label.id = (i+""+j+"L");
+            //label
+            var label = document.createElement("label");
+            label.htmlFor = (uploadID);
+            label.id = (labelID);
             characterHolder.appendChild(label);
-
-            let actualImg = document.createElement("img");
+            //then img
+            var actualImg = document.createElement("img");
             actualImg.className = "characterDisplay";
             actualImg.src = "images/plus.svg";
             label.appendChild(actualImg);
 
-            let grid = document.createElement("div");
+            // then for dead character
+            var deadUploadButton = document.createElement("input");
+            deadUploadButton.type = "file";
+            deadUploadButton.selfIndex = selfIndex;
+            deadUploadButton.labelID = deadLabelID;
+            deadUploadButton.id = deadUploadID;
+            deadUploadButton.className = "characterImage";
+            deadUploadButton.addEventListener("change", function() {
+                doWithImage(this, (ret) => {
+                    __charactersDatasheet[this.selfIndex].deadImage = ret;
+                    document.getElementById(this.labelID).lastChild.src = ret;
+                });
+            });
+            districtsHolder.appendChild(deadUploadButton);
+            //label
+            var deadLabel = document.createElement("label");
+            deadLabel.htmlFor = (deadUploadID);
+            deadLabel.id = (deadLabelID);
+            characterHolder.appendChild(deadLabel);
+            //then img
+            var actualDeadImg = document.createElement("img");
+            actualDeadImg.className = "characterDisplay";
+            actualDeadImg.src = "images/plus.svg";
+            deadLabel.appendChild(actualDeadImg);
+
+            var grid = document.createElement("div");
             grid.className = "characterInputGrid";
             characterHolder.appendChild(grid);
 
-            createPlayerInput(grid, "Name");
-            createPlayerDropdown(grid, "Age", "Child", "Teen", "Young Adult", "Adult", "Senior", "Ancient");
-            createPlayerDropdown(grid, "EyeSight", "Good", "Fair", "Poor");
-            createPlayerDropdown(grid, "Weight", "Light", "medium", "Heavy");
-            createPlayerDropdown(grid, "Height", "Short", "Average", "Tall");
-            createPlayerDropdown(grid, "Gender", "M", "F", "?");
+            createPlayerInput(grid, "Name", 0, selfIndex);
+            createPlayerDropdown(grid, "Age", 1, selfIndex, "Child", "Teen", "Young Adult", "Adult", "Senior", "Ancient");
+            createPlayerDropdown(grid, "EyeSight", 2, selfIndex, "Good", "Fair", "Poor");
+            createPlayerDropdown(grid, "Weight", 3, selfIndex, "Light", "Medium", "Heavy");
+            createPlayerDropdown(grid, "Height", 4, selfIndex, "Short", "Average", "Tall");
+            createPlayerDropdown(grid, "Gender", 5, selfIndex, "M", "F", "?");
         }
     }
 }
 
-function createPlayerInput(grid, label) {
-    let inputHolder = document.createElement("div");
-        inputHolder.className = "characterInput";
-        grid.appendChild(inputHolder);
+function createPlayerInput(grid, label, inputIndex, selfIndex) {
+    __charactersDatasheet[selfIndex].params.push(0);
+    var inputHolder = document.createElement("div");
+    inputHolder.className = "characterInput";
+    grid.appendChild(inputHolder);
 
-        let characterText = document.createElement("p");
-        characterText.innerText = label
-        inputHolder.appendChild(characterText);
+    var characterText = document.createElement("p");
+    characterText.innerText = label
+    inputHolder.appendChild(characterText);
 
-        let characterInput = document.createElement("input");
-        inputHolder.appendChild(characterInput);
+    var characterInput = document.createElement("input");
+    characterInput.selfIndex = selfIndex;
+    characterInput.inputIndex = inputIndex;
+    characterInput.oninput = () => {
+        __charactersDatasheet[selfIndex].params[inputIndex] = characterInput.value;
+    }
+    inputHolder.appendChild(characterInput);
 }
 
-function createPlayerDropdown(grid, label, ...options) {
-    let inputHolder = document.createElement("div");
-        inputHolder.className = "characterInput";
-        grid.appendChild(inputHolder);
+function createPlayerDropdown(grid, label, inputIndex, selfIndex, ...options) {
+    __charactersDatasheet[selfIndex].params.push(0);
+    var inputHolder = document.createElement("div");
+    inputHolder.className = "characterInput";
+    grid.appendChild(inputHolder);
 
-        let characterText = document.createElement("p");
-        characterText.innerText = label
-        inputHolder.appendChild(characterText);
+    var characterText = document.createElement("p");
+    characterText.innerText = label
+    inputHolder.appendChild(characterText);
 
-        let characterDropdown = document.createElement("div");
-        characterDropdown.className = "characterDropdown";
-        inputHolder.appendChild(characterDropdown);
+    var characterDropdown = document.createElement("div");
+    characterDropdown.className = "characterDropdown";
+    inputHolder.appendChild(characterDropdown);
 
-        let characterDropdownText = document.createElement("p");
-        characterDropdown.appendChild(characterDropdownText);
+    var characterDropdownText = document.createElement("p");
+    characterDropdown.appendChild(characterDropdownText);
 
-        let dropDownHolder = document.createElement("div");
-        dropDownHolder.className = "characterDropdownContainer";
-        characterDropdown.appendChild(dropDownHolder);
+    var dropDownHolder = document.createElement("div");
+    dropDownHolder.className = "characterDropdownContainer";
+    characterDropdown.appendChild(dropDownHolder);
 
-        options.forEach(function(o) {
-            op = document.createElement("div");
-            op.innerText = o;
-            op.onmousedown = () => {
-                characterDropdownText.textContent = o
-            };
-            dropDownHolder.appendChild(op);
-        });
+    options.forEach(function(o, i) {
+        let op = document.createElement("div");
+        op.innerText = o;
+        op.optionIndex = i;
+        op.onmousedown = () => {
+            console.log(op.optionIndex);
+            characterDropdownText.textContent = op.innerText;
+            __charactersDatasheet[selfIndex].params[inputIndex] = op.optionIndex;
+        };
+        dropDownHolder.appendChild(op);
+    });
 
 }
 
-function doWithImage(e) {
-    let file = this.files[0];
-    let findMe = this.id + "L";
-    let reader = new FileReader();
+function doWithImage(event, load) {
+    var file = event.files[0];
+    var reader = new FileReader();
 
-    reader.onload = function (e) {
-        console.log(findMe + " | " + document.getElementById(findMe));
-        document.getElementById(findMe).lastChild.src = e.target.result;//.style.background = "blue";//e.target.result;
+    reader.onload = async function(e) {
+        load(e.target.result);
+    }
+    
+    reader.readAsDataURL(file);
+}
+
+function readData(file) {
+    var ret;
+    reader.onload = function(e) {
+        ret = e.target.result;
+        return ret;
     };
-
     reader.readAsDataURL(file);
 }
 
