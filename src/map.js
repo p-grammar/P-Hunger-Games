@@ -4,14 +4,14 @@ class Biome {
         this.color = c;
     }
 }
-
 class Chunk {
+    
     constructor(b, v, x, y) {
         this.biome = b;
         this.value = v;
         this.x = x;
         this.y = y;
-        this.sprite = new PIXI.Sprite(PIXI.Texture.WHITE);
+        this.sprite = new PIXI.Sprite(PIXI.Texture.WHITE);;
         this.sprite.tint = this.biome.color;
         this.sprite.x = x * 10;
         this.sprite.y = y * 10;
@@ -77,6 +77,9 @@ class MapGenerator {
         });
         viewport.fit();
 
+        mapContainer.removeChildren();
+
+        PIXI.utils.destroyTextureCache();
         map = this.worldGen(radius, biomes, 9);
         map.grid = new PF.Grid(radius * 2 + 1, radius * 2 + 1);
     }
