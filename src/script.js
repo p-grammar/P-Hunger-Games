@@ -1,4 +1,4 @@
-clabGamestart = false;
+clabGamestart = true;
 //var PF = require('pathfinding');
 
 /* eslint-disable no-undef */
@@ -40,7 +40,7 @@ function main() {
 
 function beginGames()
 {
-    mapGen.generateMap(MAP_SIZE);
+    MapGenerator.generateMap(MAP_SIZE);
     setupPlayers();
 
     MainLoop.setUpdate(update).setDraw(draw).start();
