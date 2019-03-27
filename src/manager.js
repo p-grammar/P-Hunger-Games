@@ -14,11 +14,23 @@ var __charactersDatasheet;
 var __worldDatasheet;
 //
 
-class characterPassInfo {
+class CharacterPassInfo {
     constructor() {
         this.aliveImage;
         this.deadImage;
         this.params;
+    }
+}
+
+class WorldPassInfo {
+    constructor() {
+        this.worldSize;
+        this.biomeList;
+        this.worldBorderSpeed;
+        this.cornucopiaQuality;
+        this.seaLevel;
+        this.sponsors;
+        this.events;
     }
 }
 
@@ -121,8 +133,13 @@ makeFormButton.onclick = makeForm;
 formMakerSettings.appendChild(makeFormButton);
 
 /*
- * world holder
+ *
+ * world settings
+ *  
  */
+
+__worldDatasheet = new WorldPassInfo();
+
 var worldSettings = document.createElement("div");
 worldSettings.className = "settings worldSettings";
 settingsSuper.appendChild(worldSettings);
@@ -131,7 +148,7 @@ var worldSettingsGrid = document.createElement("div");
 worldSettingsGrid.className = "worldSettingsGrid";
 worldSettings.appendChild(worldSettingsGrid);
 
-function createWorldSetting(name) {
+function createWorldSize(name) {
     let worldInputHolder = document.createElement("div");
     worldInputHolder.className = "worldInputHolder";
     worldSettingsGrid.appendChild(worldInputHolder);
@@ -140,15 +157,25 @@ function createWorldSetting(name) {
     text.textContent = name;
     worldInputHolder.appendChild(text);
 
+    __worldDatasheet.worldSize = MIN_WORLD_SIZE;
+
     let input = document.createElement("input");
     input.type = "number";
     input.value = MIN_WORLD_SIZE;
     input.min = MIN_WORLD_SIZE;
     input.max = MAX_WORLD_SIZE;
+    input.oninput = () => {
+        if(input.value < MIN_WORLD_SIZE) {
+            input.value = MIN_WORLD_SIZE;
+        } else if(input.value > MAX_WORLD_SIZE) {
+            input.value = MAX_WORLD_SIZE;
+        }
+        __worldDatasheet.worldSize = parseInt(input.value);
+    }
     worldInputHolder.appendChild(input);
 }
 
-function createWorldDropdown(name, ...options) {
+function createWorldDropdown(name, toDoWithData, ...options) {
     let worldInputHolder = document.createElement("div");
     worldInputHolder.className = "worldInputHolder";
     worldSettingsGrid.appendChild(worldInputHolder);
@@ -179,15 +206,19 @@ function createWorldDropdown(name, ...options) {
     dropdownContainer.className = "eventDropdownContainer";
     dropdown.appendChild(dropdownContainer);
 
-    options.forEach((op) => {
+    options.forEach((op, i) => {
         let option = document.createElement("div");
         option.textContent = op;
+        option.selfIndex = i;
         option.onmousedown = () => {
+            toDoWithData(option.selfIndex);
             dropdownText.textContent = option.textContent;
             dropdownContainer.insertBefore(option, dropdownContainer.firstChild);
         }
         dropdownContainer.appendChild(option);
     });
+
+    toDoWithData(dropdownContainer.firstChild.selfIndex);
 }
 
 function createBiomeList(name, options) {
@@ -203,9 +234,11 @@ function createBiomeList(name, options) {
     dropdown.className = "eventDropdown";
     worldInputHolder.appendChild(dropdown);
 
-    /* the text has all the information about biomes in it */
+    /* setup the biome list in world pass */
+    __worldDatasheet.biomeList = new Array(options.length).fill(true);
+    /**************************************/
+
     let dropdownText = document.createElement("p");
-    dropdownText.biomeList = new Array(options.length).fill(true);
     dropdownText.textContent = "...";
     dropdown.appendChild(dropdownText);
 
@@ -226,10 +259,10 @@ function createBiomeList(name, options) {
         option.onmousedown = () => {
             if(optionCheckmark.classList.contains("biomeSelected")) {
                 optionCheckmark.classList.remove("biomeSelected");
-                dropdownText.biomeList[option.selfIndex] = false;
+                __worldDatasheet.biomeList[option.selfIndex] = false;
             } else {
                 optionCheckmark.classList.add("biomeSelected");
-                dropdownText.biomeList[option.selfIndex] = true;
+                __worldDatasheet.biomeList[option.selfIndex] = true;
             }
         }
         dropdownContainer.appendChild(option);
@@ -249,6 +282,7 @@ function createSponsors(name, ...options) {
     let input = document.createElement("div");
     input.options = options;
     input.boolean = true;
+    __worldDatasheet.sponsors = true;
     input.textContent = options[0];
     input.className = "sponsors";
     input.onclick = () => {
@@ -259,15 +293,24 @@ function createSponsors(name, ...options) {
             input.textContent = input.options[0];
             input.boolean = true;
         }
+        __worldDatasheet.sponsors = input.boolean;
     }
     worldInputHolder.appendChild(input);
 }
 
-createWorldSetting("World Size");
+createWorldSize("World Size");
 createBiomeList("Biome List", BIOME_LIST);
-createWorldDropdown("Worldborder", "Unmoving", "Slow", "Medium", "Fast");
-createWorldDropdown("Cornucopia", "Empty", "Poor", "Average", "Rich", "Extravegant");
-createWorldDropdown("Sea Level", "Dry", "Low", "Default", "Waterworld");
+createWorldDropdown("Worldborder", (index) => {
+    __worldDatasheet.worldBorderSpeed = index;
+},
+"Unmoving", "Slow", "Medium", "Fast");
+createWorldDropdown("Cornucopia", (index) => {
+    __worldDatasheet.cornucopiaQuality = index;
+},
+"Empty", "Poor", "Average", "Rich", "Extravegant");
+createWorldDropdown("Sea Level", (index) => {
+    __worldDatasheet.seaLevel = index;
+}, "Dry", "Low", "Default", "Waterworld");
 createSponsors("Sponsors", "On", "Off");
 
 var worldEventHolder = document.createElement("div");
@@ -302,7 +345,9 @@ var makeWorldButton = document.createElement("button");
 makeWorldButton.className = "makeWorldButton";
 makeWorldButton.innerText = "Make World";
     makeWorldButton.onclick = () => {
-        MapGenerator.generateMap(30);
+        MapGenerator.generateMap(__worldDatasheet.worldSize);
+
+        console.log(__worldDatasheet);
 
         if(worldArea.lastChild.className != "startGameButton") {
             app.view.className = "worldMapDisplay";
@@ -332,13 +377,19 @@ var addButtonImg = document.createElement("img");
 addButtonImg.src = "images/plus.svg";
 addButton.appendChild(addButtonImg);
 
-var numEvents = 0;
+var numDays = 0;
+
+__worldDatasheet.events = [];
 
 createEventListItem();
 createEventListItem();
 
 function createEventListItem() {
-    if(numEvents < 10) {
+    if(numDays < 10) {
+
+        /* give an array for this day */
+        __worldDatasheet.events.push([]);
+
         let newListItem = document.createElement("div");
         newListItem.className = "worldEventListItem";
         eventList.insertBefore(newListItem, listItem);
@@ -346,9 +397,9 @@ function createEventListItem() {
         /* add a day number to the day button */
         /* +1 for 1 index on displayyyyyyyyyyyyy */
         var addButton = document.createElement("div");
-        addButton.selfIndex = numEvents;
+        addButton.selfIndex = numDays;
         addButton.classList = "dayButton";
-        addButton.textContent = (numEvents + 1);
+        addButton.textContent = (numDays + 1);
         addButton.onclick = () => {
             removeEventListItem(addButton.selfIndex);
         }
@@ -361,8 +412,11 @@ function createEventListItem() {
 
         function addEvent() {
             if(eventHolder.numEvents < 3) {
-                ++eventHolder.numEvents;
-                eventHolder.style.gridTemplateColumns = "repeat(" + eventHolder.numEvents + ",1fr)";
+
+                /* add an event to this day */
+                __worldDatasheet.events[addButton.selfIndex].push(0);
+
+                eventHolder.style.gridTemplateColumns = "repeat(" + (eventHolder.numEvents + 1) + ",1fr)";
 
                 let eventDropdown = document.createElement("div");
                 eventDropdown.className = "eventDropdown";
@@ -380,7 +434,8 @@ function createEventListItem() {
 
                 let dropdownText = document.createElement("p");
                 dropdownText.textContent = EVENT_OPTIONS[0];
-                dropdownText.eventValue = 0;
+                dropdownText.selfIndex = eventHolder.numEvents;
+                dropdownText.superIndex = addButton.selfIndex;
                 eventDropdown.appendChild(dropdownText);
 
                 let dropdownContainer = document.createElement("div");
@@ -400,6 +455,8 @@ function createEventListItem() {
                     }
                     dropdownContainer.appendChild(dropdownOption);
                 }
+
+                ++eventHolder.numEvents;
             } else {
                 alert("Only 3 events per day");
             }
@@ -410,6 +467,7 @@ function createEventListItem() {
                 --eventHolder.numEvents
                 eventHolder.style.gridTemplateColumns = "repeat(" + eventHolder.numEvents + ",1fr)";
                 eventHolder.removeChild(eventHolder.lastChild);
+                __worldDatasheet.events[eventHolder.lastChild.firstChild.selfIndex].pop();
             }
         }
 
@@ -433,7 +491,7 @@ function createEventListItem() {
         }
         eventButtonHolder.appendChild(eventAddButton);
 
-        ++numEvents;
+        ++numDays;
     } else {
         alert("you can only have 10 event days");
     }
@@ -445,7 +503,8 @@ function removeEventListItem(index) {
         --eventList.childNodes[i].firstChild.selfIndex;
         --eventList.childNodes[i].firstChild.innerText;
     }
-    --numEvents;
+    __worldDatasheet.events.splice(index, 1);
+    --numDays;
 }
 
 /*
@@ -453,8 +512,8 @@ function removeEventListItem(index) {
  */
 function selectDropdownOption(text, option) {
     text.textContent = option.textContent;
-    text.eventValue = option.selfIndex;
     option.parentElement.insertBefore(option, option.parentElement.firstChild);
+    __worldDatasheet.events[text.superIndex][text.selfIndex] = option.selfIndex
 }
 
 eventRandomButton.onclick = () => {
