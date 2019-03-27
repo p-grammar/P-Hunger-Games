@@ -1,6 +1,3 @@
-const MAX_DISTRICTS = 20;
-const MAX_PER_DISTRICT = 5;
-
 var body;
 
 var header;
@@ -11,8 +8,10 @@ var settingsSuper;
 var formMakerSettings;
 var characterSettings;
 
-/*IMPORTANT */
+/*IMPORTANT*/
 var __charactersDatasheet;
+
+var __worldDatasheet;
 //
 
 class characterPassInfo {
@@ -32,7 +31,7 @@ const passInfoIndices = {
     GENDER: 5,
 }
 
-var EVENT_OPTIONS = [
+const EVENT_OPTIONS = [
     "Nothing",
     "Rain",
     "Drought",
@@ -47,6 +46,19 @@ var EVENT_OPTIONS = [
     "Nuclear Blast"
 ]
 
+const BIOME_LIST = [
+    "Ocean",
+    "Beach",
+    "Plains",
+    "Forest",
+    "Mountains",
+    "Desert"
+]
+
+const MAX_DISTRICTS = 20;
+const MAX_PER_DISTRICT = 5;
+const MIN_WORLD_SIZE = 10;
+const MAX_WORLD_SIZE = 30;
 
 body = document.body;
 
@@ -119,18 +131,144 @@ var worldSettingsGrid = document.createElement("div");
 worldSettingsGrid.className = "worldSettingsGrid";
 worldSettings.appendChild(worldSettingsGrid);
 
-for(let i = 0; i < 6; ++i) {
+function createWorldSetting(name) {
     let worldInputHolder = document.createElement("div");
     worldInputHolder.className = "worldInputHolder";
     worldSettingsGrid.appendChild(worldInputHolder);
 
     let text = document.createElement("p");
-    text.textContent = "what's up P"
+    text.textContent = name;
     worldInputHolder.appendChild(text);
 
     let input = document.createElement("input");
+    input.type = "number";
+    input.value = MIN_WORLD_SIZE;
+    input.min = MIN_WORLD_SIZE;
+    input.max = MAX_WORLD_SIZE;
     worldInputHolder.appendChild(input);
 }
+
+function createWorldDropdown(name, ...options) {
+    let worldInputHolder = document.createElement("div");
+    worldInputHolder.className = "worldInputHolder";
+    worldSettingsGrid.appendChild(worldInputHolder);
+
+    let text = document.createElement("p");
+    text.textContent = name;
+    worldInputHolder.appendChild(text);
+
+    let dropdown = document.createElement("div");
+    dropdown.className = "eventDropdown";
+        dropdown.onmousedown = () => {
+            if(dropdown.classList.contains("dropdownCooldown")) {
+                dropdown.classList.remove("dropdownCooldown");
+            } else {
+                dropdown.classList.add("dropdownCooldown");
+            }
+        }
+        dropdown.onmouseleave = () => {
+            dropdown.classList.remove("dropdownCooldown");
+        }
+    worldInputHolder.appendChild(dropdown);
+
+    let dropdownText = document.createElement("p");
+    dropdownText.textContent = options[0];
+    dropdown.appendChild(dropdownText);
+
+    let dropdownContainer = document.createElement("div");
+    dropdownContainer.className = "eventDropdownContainer";
+    dropdown.appendChild(dropdownContainer);
+
+    options.forEach((op) => {
+        let option = document.createElement("div");
+        option.textContent = op;
+        option.onmousedown = () => {
+            dropdownText.textContent = option.textContent;
+            dropdownContainer.insertBefore(option, dropdownContainer.firstChild);
+        }
+        dropdownContainer.appendChild(option);
+    });
+}
+
+function createBiomeList(name, options) {
+    let worldInputHolder = document.createElement("div");
+    worldInputHolder.className = "worldInputHolder";
+    worldSettingsGrid.appendChild(worldInputHolder);
+
+    let text = document.createElement("p");
+    text.textContent = name;
+    worldInputHolder.appendChild(text);
+
+    let dropdown = document.createElement("div");
+    dropdown.className = "eventDropdown";
+    worldInputHolder.appendChild(dropdown);
+
+    /* the text has all the information about biomes in it */
+    let dropdownText = document.createElement("p");
+    dropdownText.biomeList = new Array(options.length).fill(true);
+    dropdownText.textContent = "...";
+    dropdown.appendChild(dropdownText);
+
+    let dropdownContainer = document.createElement("div");
+    dropdownContainer.classList = "eventDropdownContainer biomeList";
+    dropdown.appendChild(dropdownContainer);
+
+    options.forEach((op, i) => {
+        let option = document.createElement("div");
+        option.selfIndex = i;
+        option.textContent = op;
+
+        let optionCheckmark = document.createElement("div");
+        optionCheckmark.className = "biomeCheckmark";
+        optionCheckmark.classList.add("biomeSelected");
+        option.appendChild(optionCheckmark);
+
+        option.onmousedown = () => {
+            if(optionCheckmark.classList.contains("biomeSelected")) {
+                optionCheckmark.classList.remove("biomeSelected");
+                dropdownText.biomeList[option.selfIndex] = false;
+            } else {
+                optionCheckmark.classList.add("biomeSelected");
+                dropdownText.biomeList[option.selfIndex] = true;
+            }
+        }
+        dropdownContainer.appendChild(option);
+
+    });
+}
+
+function createSponsors(name, ...options) {
+    let worldInputHolder = document.createElement("div");
+    worldInputHolder.className = "worldInputHolder";
+    worldSettingsGrid.appendChild(worldInputHolder);
+
+    let text = document.createElement("p");
+    text.textContent = name;
+    worldInputHolder.appendChild(text);
+
+    let input = document.createElement("div");
+    input.options = options;
+    input.boolean = true;
+    input.textContent = options[0];
+    input.className = "sponsors";
+    input.onclick = () => {
+        if(input.textContent === input.options[0]) {
+            input.textContent = input.options[1];
+            input.boolean = false;
+        } else {
+            input.textContent = input.options[0];
+            input.boolean = true;
+        }
+    }
+    worldInputHolder.appendChild(input);
+}
+
+createWorldSetting("World Size");
+createBiomeList("Biome List", BIOME_LIST);
+createWorldDropdown("Worldborder", "Unmoving", "Slow", "Medium", "Fast");
+createWorldDropdown("Cornucopia", "Empty", "Poor", "Average", "Rich", "Extravegant");
+createWorldDropdown("Sea Level", "Dry", "Low", "Default", "Waterworld");
+createSponsors("Sponsors", "On", "Off");
 
 var worldEventHolder = document.createElement("div");
 worldEventHolder.className = "worldEventHolder";
@@ -305,12 +443,14 @@ function selectDropdownOption(text, option) {
 eventRandomButton.onclick = () => {
     eventList.childNodes.forEach((item, i) => {
         /* second child of the list item is the event holder */
-        let eventList = item.childNodes[1].childNodes;
-        eventList.forEach((event) => {
-            optionList = event.lastChild.childNodes;
-            let select = optionList[Math.floor(Math.random() * optionList.length)];
-            selectDropdownOption(event.firstChild, select);
-        });
+        if(item.childNodes[1] !== undefined) {
+            let eventList = item.childNodes[1].childNodes;
+            eventList.forEach((event) => {
+                optionList = event.lastChild.childNodes;
+                let select = optionList[Math.floor(Math.random() * optionList.length)];
+                selectDropdownOption(event.firstChild, select);
+            });
+        }
     });
 }
 //^^^^^

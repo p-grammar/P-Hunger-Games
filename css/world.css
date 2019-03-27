@@ -1,3 +1,19 @@
+.biomeCheckmark {
+    position: absolute !important;
+    background-color: #cc6528;
+    display: none;
+    right: 0px;
+    top: 0px;
+    height: 25px !important;
+    width: 25px !important; 
+    border-radius: 5px !important;
+    z-index: 4;
+}
+
+.biomeSelected {
+    display: block;
+}
+
 .worldSettings {
     /* uwu */
 }
@@ -14,7 +30,7 @@
     grid-template-columns: 100px 1fr;
     grid-column-gap: 5px;
     width: 100%;
-    height: 100%;
+    height: 50px;
 }
 
 .worldInputHolder p {
@@ -36,10 +52,24 @@
     border: 0px;
     border-radius: 5px;
     padding: 5px;
+    outline: none;
+}
+
+.worldInputHolder > input:invalid {
+    background-color: red;
+    outline: none;
 }
 
 .worldInputHolder input:hover {
     outline: none;
+}
+
+.worldEventHolder > input:active {
+    outline: none;
+}
+
+.worldInputHolder > div {
+    margin-top: 12.5px;
 }
 
 .worldEventHolder {
@@ -81,6 +111,22 @@
 .worldRandomButton img {
     width: 100%;
     height: 100%;
+}
+
+.sponsors {
+    width: 100%;
+    height: 25px;
+    margin-top: 12.5px;
+    background-color: white;
+    border-radius: 5px;
+
+    font-family: sans-serif;
+    text-align: center;
+    line-height: 25px;
+
+    cursor: pointer;
+
+    user-select: none;
 }
 
 .worldEventList {
@@ -190,6 +236,7 @@
 }
 
 .eventDropdown {
+    width: 100%;
     height: fit-content;
 }
 
@@ -202,12 +249,14 @@
     padding: 5px;
     line-height: 15px;
     height: 25px;
+    width: 100%;
 
     background-color: white;
     border-radius: 5px;
 
     color: black;
     font-family: sans-serif;
+    text-align: center;
 }
 
 .eventDropdownContainer {
@@ -225,7 +274,7 @@
     display: block;
 }
 
-.eventDropdown:active .eventDropdownContainer {
+.eventDropdown:active .eventDropdownContainer:not(.biomeList) {
     display: none;
 }
 
@@ -234,6 +283,8 @@
 }
 
 .eventDropdownContainer div {
+    position: relative;
+
     text-align: center;
     font-family: sans-serif;
 
@@ -248,7 +299,7 @@
     background-color: #f4e2d7;
 }
 
-.eventDropdownContainer div:first-child {
+.eventDropdownContainer:not(.biomeList) div:first-child {
     background-color: white;
 }
 
