@@ -32,6 +32,21 @@ const passInfoIndices = {
     GENDER: 5,
 }
 
+var EVENT_OPTIONS = [
+    "Nothing",
+    "Rain",
+    "Drought",
+    "Snow",
+    "Restock",
+    "Squirrel Attack",
+    "Land Mines",
+    "Wildfires",
+    "Fog",
+    "Beast Attack",
+    "Earthquake",
+    "Nuclear Blast"
+]
+
 
 body = document.body;
 
@@ -146,6 +161,7 @@ makeWorldButton.className = "makeWorldButton";
 makeWorldButton.innerText = "Make World";
 worldSettingsGrid.appendChild(makeWorldButton);
 
+/* this is the list item with the plus button to add */
 var listItem = document.createElement("div");
 listItem.className = "worldEventListItem";
 eventList.appendChild(listItem);
@@ -168,7 +184,7 @@ createEventListItem();
 
 function createEventListItem() {
     if(numEvents < 10) {
-        var newListItem = document.createElement("div");
+        let newListItem = document.createElement("div");
         newListItem.className = "worldEventListItem";
         eventList.insertBefore(newListItem, listItem);
 
@@ -183,9 +199,69 @@ function createEventListItem() {
         }
         newListItem.appendChild(addButton);
 
-        var eventDropdown = document.createElement("div");
-        eventDropdown.className = "eventDropdown";
-        newListItem.appendChild(eventDropdown);
+        let eventHolder = document.createElement("div");
+        eventHolder.className = "eventHolder";
+        eventHolder.numEvents = 0;
+        newListItem.appendChild(eventHolder);
+
+        function addEvent() {
+            if(eventHolder.numEvents < 3) {
+                ++eventHolder.numEvents;
+                eventHolder.style.gridTemplateColumns = "repeat(" + eventHolder.numEvents + ",1fr)";
+
+                let eventDropdown = document.createElement("div");
+                eventDropdown.className = "eventDropdown";
+                    eventDropdown.onmousedown = () => {
+                        if( eventDropdown.classList.contains("dropdownCooldown")) {
+                            eventDropdown.classList.remove("dropdownCooldown");
+                        } else {
+                            eventDropdown.classList.add("dropdownCooldown");
+                        }
+                    }
+                    eventDropdown.onmouseleave = () => {
+                        eventDropdown.classList.remove("dropdownCooldown");
+                    }
+                eventHolder.appendChild(eventDropdown);
+
+                let dropdownText = document.createElement("p");
+                dropdownText.textContent = EVENT_OPTIONS[0];
+                dropdownText.eventValue = 0;
+                eventDropdown.appendChild(dropdownText);
+
+                let dropdownContainer = document.createElement("div");
+                dropdownContainer.className = "eventDropdownContainer";
+                eventDropdown.appendChild(dropdownContainer);
+
+                EVENT_OPTIONS.forEach((op, i) => {
+                    createDropdownOption(op, i);
+                });
+
+                function createDropdownOption(string, index) {
+                    let dropdownOption = document.createElement("div");
+                    dropdownOption.textContent = string;
+                    dropdownOption.selfIndex = index;
+                    dropdownOption.onmousedown = () => {
+                        selectDropdownOption(dropdownText, dropdownOption);
+                    }
+                    dropdownContainer.appendChild(dropdownOption);
+                }
+            } else {
+                alert("Only 3 events per day");
+            }
+        }
+
+        addEvent();
+
+        let eventAddButton = document.createElement("div");
+        eventAddButton.className = "eventAddButton";
+        eventAddButton.onclick = () => {
+            addEvent();
+        }
+        newListItem.appendChild(eventAddButton);
+
+        /*let eventAddButtonPlus = document.createElement("img");
+        eventAddButtonPlus.src = "images/plus.svg"
+        eventAddButton.appendChild(eventAddButtonPlus);*/
 
         ++numEvents;
     } else {
@@ -194,16 +270,29 @@ function createEventListItem() {
 }
 
 function removeEventListItem(index) {
-    console.log("kek | " + index);
     eventList.removeChild(eventList.childNodes[index]);
     for(let i = index; i < eventList.childElementCount - 1; ++i) {
-        console.log(i);
-        
         --eventList.childNodes[i].firstChild.selfIndex;
         --eventList.childNodes[i].firstChild.innerText;
-        
     }
     --numEvents;
+}
+
+/*
+ * Takes in the P inside a event list entry, and the option in the entry's dropdown
+ */
+function selectDropdownOption(text, option) {
+    text.textContent = option.textContent;
+    text.eventValue = option.selfIndex;
+    option.parentElement.insertBefore(option, option.parentElement.firstChild);
+}
+
+eventRandomButton.onclick = () => {
+    eventList.childNodes.forEach((item, i) => {
+        let dropdownList =  item.lastChild.lastChild.childNodes;
+        let select = dropdownList[Math.floor(Math.random() * dropdownList.length)];
+        selectDropdownOption(item.lastChild.firstChild, select);
+    });
 }
 //^^^^^
 
@@ -400,7 +489,6 @@ function createPlayerDropdown(grid, label, inputIndex, selfIndex, ...options) {
         op.innerText = o;
         op.optionIndex = i;
         op.onmousedown = () => {
-            console.log(op.optionIndex);
             characterDropdownText.textContent = op.innerText;
             __charactersDatasheet[selfIndex].params[inputIndex] = op.optionIndex;
         };
@@ -427,8 +515,4 @@ function readData(file) {
         return ret;
     };
     reader.readAsDataURL(file);
-}
-
-function keek() {
-    alert("keek");
 }

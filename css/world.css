@@ -89,12 +89,25 @@
 }
 
 .worldEventListItem {
+    position: relative;
     width: 100%;
-    height: auto;
+    max-height: 25px;
     box-sizing: border-box;
     display: grid;
-    grid-template-columns: 50px 1fr;
+    grid-template-columns: 50px 1fr 50px;
     grid-column-gap: 5px;
+}
+
+.worldEventListItem:last-child {
+    max-height: 50px;
+}
+
+.worldEventListItem:hover {
+    z-index: 2;
+}
+
+.worldEventListItem:not(:hover) {
+    z-index: 1;
 }
 
 .worldEventListItem:not(:first-child) {
@@ -125,10 +138,93 @@
     height: 100%;
 }
 
+.eventHolder {
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-gap: 5px;
+    height: 25px;
+}
+
+.eventAddButton {
+    width: 50px;
+    height: 25px;
+    border-radius: 5px;
+    overflow: hidden;
+    cursor: pointer;
+
+    display: block;
+    position: relative;
+
+    background-image: url(../images/plus.svg);
+
+    background-position: center;
+    background-size: 25px;
+    background-repeat: no-repeat;
+
+    background-color: lightgray;
+}
+
 .eventDropdown {
-    width: 100%;
+    height: fit-content;
+}
+
+.eventDropdown p {
+    user-select: none;
+    position: relative;
+    z-index: 1;
+
+    box-sizing: border-box;
+    padding: 5px;
+    line-height: 15px;
+    height: 25px;
+
     background-color: white;
     border-radius: 5px;
+
+    color: black;
+    font-family: sans-serif;
+}
+
+.eventDropdownContainer {
+    position: relative;
+    z-index: 2;
+    margin-top: -25px;
+    display: none;
+    width: 100%;
+    background-color: lightgray;
+    border-radius: 5px;
+    height: min-content;
+}
+
+.eventDropdown:hover .eventDropdownContainer {
+    display: block;
+}
+
+.eventDropdown:active .eventDropdownContainer {
+    display: none;
+}
+
+.dropdownCooldown:hover .eventDropdownContainer {
+    display: none;
+}
+
+.eventDropdownContainer div {
+    text-align: center;
+    font-family: sans-serif;
+
+    line-height: 25px;
+    height: 25px;
+    width: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.eventDropdownContainer div:hover {
+    background-color: #f4e2d7;
+}
+
+.eventDropdownContainer div:first-child {
+    background-color: white;
 }
 
 .makeWorldButton {
