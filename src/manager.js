@@ -70,7 +70,7 @@ const BIOME_LIST = [
 const MAX_DISTRICTS = 20;
 const MAX_PER_DISTRICT = 5;
 const MIN_WORLD_SIZE = 10;
-const MAX_WORLD_SIZE = 30;
+const MAX_WORLD_SIZE = 300;
 
 body = document.body;
 
@@ -532,6 +532,8 @@ eventRandomButton.onclick = () => {
 }
 //^^^^^
 
+__charactersDatasheet = [];
+
 function makeForm() {
     let districts = numberDistrictsInput.value;
     let per = perDistrictsInput.value;
@@ -548,6 +550,10 @@ function makeForm() {
         per = MAX_PER_DISTRICT;
     }
 
+    //cleanup PIXI stuff
+    __charactersDatasheet.forEach((character) => {
+        character.aliveImage.destroy();
+    });
     __charactersDatasheet = [];
 
     //
@@ -573,7 +579,7 @@ function makeForm() {
             var deadUploadID = "DU"+i+j;
             var deadLabelID = "DL"+i+j;
 
-            var selfIndex = i * per + j;
+            let selfIndex = i * per + j;
 
             __charactersDatasheet.push(new CharacterPassInfo());
             __charactersDatasheet[selfIndex].params = [];
@@ -582,47 +588,65 @@ function makeForm() {
             characterHolder.className = "characterHolder";
             districtInputContainer.appendChild(characterHolder);
 
+            /*setup a PIXI app for the character*/ // 
+            let aliveApp = __charactersDatasheet[selfIndex].aliveImage = new PIXI.Application({width: 100, height: 100});
+            let aliveViewport = new PIXI.extras.Viewport({
+                screenWidth: 100,
+                screenHeight: 100,
+                interaction: aliveApp.renderer.plugins.interaction,
+            });
+            let aliveContainer = new PIXI.Container();
+            aliveApp.stage.addChild(aliveViewport);
+            aliveViewport.addChild(aliveContainer);
+            /*****************^*****/
+
             // make character upload picture button
-            var uploadButton = document.createElement("input");
+            let uploadButton = document.createElement("input");
             uploadButton.type = "file";
             uploadButton.selfIndex = selfIndex;
             uploadButton.labelID = labelID;
             uploadButton.id = uploadID;
             uploadButton.className = "characterImage";
             uploadButton.addEventListener("change", function() {
-                doWithImage(this, (ret) => {
-                    let tempImg = document.getElementById(this.labelID).lastChild;
-                    __charactersDatasheet[this.selfIndex].aliveImage = ret;
-        
-                    tempImg.onload = () => {
-                        let imgWidth  = tempImg.naturalWidth;
-                        let imgHeight = tempImg.naturalHeight;
-                        console.log(imgWidth + " " + imgHeight)
-                        if(imgWidth > imgHeight) {
-                            tempImg.className = "characterDisplayWide";
-                            let percent = ( ((imgWidth / 2) - (imgHeight / 2)) / imgWidth ) * 100;
-                            tempImg.style.transform = "translateX(-" + percent + "%)";
-                        } else {
-                            tempImg.className = "characterDisplayTall";
-                            let percent = ( ((imgHeight / 2) - (imgWidth / 2)) / imgHeight ) * 100;
-                            tempImg.style.transform = "translateY(-" + percent + "%)";
-                        }
-                    }
-
-                    tempImg.src = ret;
+                doWithImage(uploadButton, (ret) => {
+                    setImage(aliveContainer, ret);
                 });
             });
             characterSettings.appendChild(uploadButton);
-            //label
+
+            function setImage(container, img) {
+                console.log(img);
+                container.removeChildren();
+                let imageSprite = new PIXI.Sprite(new PIXI.Texture.from(img));//PIXI.Texture.WHITE //new PIXI.Texture.fromImage(ret)
+                imageSprite.width = 100;
+                imageSprite.height = 100;
+                container.addChild(imageSprite);
+            }
+
+            //setImage(aliveContainer, "http://www.thiswaifudoesnotexist.net/example-" + (Math.floor(Math.random() * 90000 + 10000)) + ".jpg");
+            //http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=420603&type=card
+            //setImage(aliveContainer, "http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=" + (Math.floor(Math.random() * 90000 + 10000)) + "&type=card");
+
+            //https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/420px-PNG_transparency_demonstration_1.png
+            //https://cors-anywhere.herokuapp.com/www.thiswaifudoesnotexist.net/example-67531.jpg
+            let loadPosts = function() {
+                let xhr = new XMLHttpRequest();
+                xhr.open("GET", "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/420px-PNG_transparency_demonstration_1.png");
+                /*xhr.setRequestHeader("Accept", 'application/json');*/
+                xhr.send();
+
+                xhr.onreadystatechange = () => {
+                    setImage(aliveContainer, btoa(xhr.responseText));
+                }
+            }
+            loadPosts();
+
+            /* label */
             var label = document.createElement("label");
             label.htmlFor = (uploadID);
             label.id = (labelID);
+            label.appendChild(aliveApp.view);
             characterHolder.appendChild(label);
-            //then img
-            var actualImg = document.createElement("img");
-            actualImg.className = "characterDisplay";
-            actualImg.src = "images/plus.svg";
-            label.appendChild(actualImg);
 
             // then for dead character
             var deadUploadButton = document.createElement("input");
