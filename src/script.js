@@ -243,12 +243,29 @@ function worldGen(radius, biomes, sharpness) {
     let chunks = [...Array(size)].map(() => Array(size));
     let superChunks = [...Array(superSize)].map(() => Array(superSize));
 
+    function checkMiddle(i, j) {}
+
+    if(superSize % 2 == 0) {
+        checkMiddle = (i, j) => {
+            console.log("even");
+            return (i == superSize / 2 || i == (superSize / 2) - 1)  && (j == superSize / 2 || j == (superSize / 2) - 1);
+        }
+    } else {
+        checkMiddle = (i, j) => {
+            console.log("odd");
+            return (i == Math.floor(superSize / 2) && j == Math.floor(superSize / 2));
+        }
+    }
+
     for(let j = 0; j < superSize; ++j) {
         for(let i = 0; i < superSize; ++i) {
-            if (j > superSize / 2 - 1 && j < superSize / 2 + 1 && i > superSize / 2 - 1 && i < superSize / 2 + 1)
-                superChunks[i][j] = [0, 0, -22];
-            else 
+            if (checkMiddle(i, j)) {
+                console.log(i + " | " + j);
+                superChunks[i][j] = [0.5, 0.5, 0.5];
+            }
+            else { 
                 superChunks[i][j] = [Math.random(), Math.random(), Math.random()];
+            }
         }
     }
 
