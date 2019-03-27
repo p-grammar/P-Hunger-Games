@@ -1,36 +1,8 @@
 //var PF = require('pathfinding');
 
 /* eslint-disable no-undef */
-class Biome {
-    constructor(n, c) {
-        this.name = n;
-        this.color = c;
-    }
-}
 
-class Chunk {
-    constructor(b, v) {
-        this.biome = b;
-        this.value = v;
-    }
-}
 
-class World {
-    constructor(w, h, ch) {
-        this.width = w;
-        this.height = h;
-        this.chunks = ch;
-    }
-}
-
-var biomes = [
-    new Biome("lake", "#1560d8"),
-    new Biome("beach", "#eddea6"),
-    new Biome("plains", "#a1c64b"),
-    new Biome("forest", "#4f8c0e"),
-    new Biome("mountains", "#635e5c"),
-    new Biome("desert", "#eaa983")
-]
 
 var players = [new Player(), new Player(), new Player(), new Player(), new Player(), new Player(), new Player(), new Player()];
 
@@ -141,13 +113,10 @@ function animationEnable(node, enable, ...disables) {
     node.classList.add(enable);
 }
 
-var world;
 var minutes = 0;
 var frameCounter = 0;
 
 var eventQueue = [];
-
-window.worldGrid;
 
 function main() {
     beginGames();
@@ -155,20 +124,16 @@ function main() {
 
 function beginGames()
 {
-    world = worldGen(MAP_SIZE, biomes, 9);
-    worldGrid = new PF.Grid(MAP_SIZE * 2 + 1, MAP_SIZE * 2 + 1);
-    printWorld(world);
-
+    let mapGen = new MapGenerator();
+    mapGen.generateMap(MAP_SIZE);
     setupPlayers();
 
     MainLoop.setUpdate(update).setDraw(draw).start();
 }
 
-function setupPlayers()
-{
+function setupPlayers() {
     let radius = players.length * .5;
-    players.forEach(function(player, index)
-    {
+    players.forEach(function(player, index) {
         // cornicopulate sans
         player.location = {
             x: Math.trunc((((MAP_SIZE * 2 + 1)) / 2) + radius * Math.cos(degToRad(index * 45))),
@@ -178,21 +143,17 @@ function setupPlayers()
     });
 }
 
-function degToRad(degrees)
-{
+function degToRad(degrees) {
     return degrees * (Math.PI/180);
 }
 
-function update()
-{
+function update() {
     // time
     frameCounter++;
-    if (frameCounter >= 60)
-    {
+    if (frameCounter >= 60) {
         frameCounter = 0;
         minutes++;
-        if (minutes % 10 === 0)
-        {
+        if (minutes % 10 === 0) {
             if (content.style.backgroundColor === 'rgb(0, 0, 0)')
             content.style.backgroundColor = "#f4e2d7";
         else
@@ -203,8 +164,7 @@ function update()
     players.forEach(function(player) {
         // player events
         player.eventQueue.forEach(function(event) {
-            if (event.canExecute())
-            {
+            if (event.canExecute()) {
                 event.execute();
                 eventQueue = eventQueue.filter(e => e !== event);
             }
@@ -215,98 +175,18 @@ function update()
 
     // global events
     eventQueue.forEach(function(event) {
-        if (event.canExecute())
-        {
+        if (event.canExecute()) {
             event.execute();
             eventQueue = eventQueue.filter(e => e !== event);
         }
     });
 }
 
-function draw()
-{
+function draw() {
     paintEntities();
 }
 
-function vToC(value) {
-    let c = value * 255;
-    if(c > 255) {
-        c = 255;
-    }
-    return "rgb(" + c + "," + c + "," + c + ")"
-}
-
-function worldGen(radius, biomes, sharpness) {
-    let size = radius * 2 + 1;
-    let superSize = Math.ceil(size / sharpness) + 2;
-
-    let chunks = [...Array(size)].map(() => Array(size));
-    let superChunks = [...Array(superSize)].map(() => Array(superSize));
-
-    for(let j = 0; j < superSize; ++j) {
-        for(let i = 0; i < superSize; ++i) {
-            if (j > superSize / 2 - 1 && j < superSize / 2 + 1 && i > superSize / 2 - 1 && i < superSize / 2 + 1)
-                superChunks[i][j] = [0, 0, -22];
-            else 
-                superChunks[i][j] = [Math.random(), Math.random(), Math.random()];
-        }
-    }
-
-    for(let j = 0; j < size; ++j) {
-        let superY = Math.floor(j / sharpness) + 1;
-        let subY = (j % sharpness) / sharpness;
-        for(let i = 0; i < size; ++i) {
-            let superX = Math.floor(i / sharpness) + 1;
-            let subX = (i % sharpness) / sharpness;
-
-            let value = 0;
-            for(let k = -1; k < 2; ++k) {
-                for(let r = -1; r < 2; ++r) {
-                    let tempX = (subX - k) - (superChunks[superX + k][superY + r][0]);
-                    let tempY = (subY - r) - (superChunks[superX + k][superY + r][1]);
-                    let tempZ = (superChunks[superX + k][superY + r][2]);
-
-                    let tot = (1 - ((tempX * tempX) + (tempY * tempY) + (tempZ * tempZ))) / 2;
-                    if(tot < 0) {
-                        tot = 0;
-                    }
-                    value += tot;
-                }
-            }
-
-            if(value >= 1) {
-                value = 0.999999
-            }
-
-            var sel = Math.floor(value * biomes.length);
-
-            chunks[i][j] = new Chunk(biomes[sel], vToC(value));
-        }
-    }
-    return new World(size, size, chunks);
-}
-
-function printWorld(w) {
-    let mapContianer = document.createElement("div");
-    mapContianer.className = "map";
-    mapContianer.style.display = "grid";
-    mapSuperContainer.appendChild(mapContianer);
-    mapContianer.style.gridTemplateColumns = "10px ".repeat(w.width);
-    mapContianer.style.gridTemplateRows = "10px ".repeat(w.height);
-    for(let j = 0; j < w.width; ++j) {
-        for(let i = 0; i < w.height; ++i) {
-            let item = document.createElement("div");
-            let color = w.chunks[i][j].biome.color;
-            item.style.backgroundColor = color;
-            item.style.width = "10px";
-            item.style.height = "10px";
-            mapContianer.appendChild(item);
-        }
-    }
-}
-
-function paintEntities()
-{
+function paintEntities() {
     players.forEach(function(player) {
         player.icon.style.left = "" + player.location.x * 10 + "px";
         player.icon.style.top = "" + player.location.y * 10 + "px";
