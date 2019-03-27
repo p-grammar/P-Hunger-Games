@@ -1,4 +1,3 @@
-
 class Biome {
     constructor(n, c) {
         this.name = n;
@@ -16,7 +15,7 @@ class Chunk {
         this.sprite.tint = this.biome.color;
         this.sprite.x = x * 10;
         this.sprite.y = y * 10;
-        app.stage.addChild(this.sprite);
+        mapContainer.addChild(this.sprite);
     }
 }
 
@@ -39,11 +38,35 @@ var biomes = [
 
 window.map = null;
 window.app = null;
+window.mapContainer = null;
 class MapGenerator {
-
     static generateMap(radius) {
         if(app === null) {
-            app = new PIXI.Application({width: (radius * 2 + 1) * 10, height: (radius * 2 + 1) * 10});
+            let mapSize = (radius * 2 + 1) * 10;
+            app = new PIXI.Application({width: 500, height: 500});
+            content.appendChild(app.view);
+            let viewport = new PIXI.extras.Viewport({
+                screenWidth: 500,
+                screenHeight: 500,
+                worldWidth: mapSize,
+                worldHeight: mapSize,
+                interaction: app.renderer.plugins.interaction,
+                passiveWheel: false
+            });
+    
+            app.stage.addChild(viewport);
+    
+            viewport.drag().wheel().clamp({
+                direction: 'all',
+                underflow: 'center'
+            }).clampZoom({
+                minWidth: 100,
+                minHeight: 100,
+                maxWidth: mapSize,
+                maxHeight: mapSize
+            });
+            mapContainer = new PIXI.Container();
+            viewport.addChild(mapContainer);
         }
         map = this.worldGen(radius, biomes, 9);
         map.grid = new PF.Grid(radius * 2 + 1, radius * 2 + 1);

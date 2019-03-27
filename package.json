@@ -6,6 +6,7 @@
   "dependencies": {
     "mainloop.js": "^1.0.4",
     "pathfinding": "^0.4.18",
+    "pixi-viewport": "^3.21.2",
     "pixi.js": "^4.8.7"
   },
   "devDependencies": {
