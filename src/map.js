@@ -60,8 +60,6 @@ class MapGenerator {
     
             mapContainer = new PIXI.Container();
             viewport.addChild(mapContainer);
-        } else {
-            map.cleanup();
         }
         
         viewport.worldWidth = mapSize;
