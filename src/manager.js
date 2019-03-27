@@ -250,18 +250,33 @@ function createEventListItem() {
             }
         }
 
+        function removeEvent() {
+            if(eventHolder.numEvents > 1) {
+                --eventHolder.numEvents
+                eventHolder.style.gridTemplateColumns = "repeat(" + eventHolder.numEvents + ",1fr)";
+                eventHolder.removeChild(eventHolder.lastChild);
+            }
+        }
+
         addEvent();
+
+        let eventButtonHolder = document.createElement("div");
+        eventButtonHolder.className = "eventButtonHolder";
+        newListItem.appendChild(eventButtonHolder);
+
+        let eventRemoveButton = document.createElement("div");
+        eventRemoveButton.className = "eventRemoveButton";
+        eventRemoveButton.onclick = () => {
+            removeEvent();
+        }
+        eventButtonHolder.appendChild(eventRemoveButton);
 
         let eventAddButton = document.createElement("div");
         eventAddButton.className = "eventAddButton";
         eventAddButton.onclick = () => {
             addEvent();
         }
-        newListItem.appendChild(eventAddButton);
-
-        /*let eventAddButtonPlus = document.createElement("img");
-        eventAddButtonPlus.src = "images/plus.svg"
-        eventAddButton.appendChild(eventAddButtonPlus);*/
+        eventButtonHolder.appendChild(eventAddButton);
 
         ++numEvents;
     } else {
@@ -289,9 +304,13 @@ function selectDropdownOption(text, option) {
 
 eventRandomButton.onclick = () => {
     eventList.childNodes.forEach((item, i) => {
-        let dropdownList =  item.lastChild.lastChild.childNodes;
-        let select = dropdownList[Math.floor(Math.random() * dropdownList.length)];
-        selectDropdownOption(item.lastChild.firstChild, select);
+        /* second child of the list item is the event holder */
+        let eventList = item.childNodes[1].childNodes;
+        eventList.forEach((event) => {
+            optionList = event.lastChild.childNodes;
+            let select = optionList[Math.floor(Math.random() * optionList.length)];
+            selectDropdownOption(event.firstChild, select);
+        });
     });
 }
 //^^^^^
