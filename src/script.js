@@ -1,99 +1,13 @@
+clabGamestart = false;
 //var PF = require('pathfinding');
 
 /* eslint-disable no-undef */
-
-
 
 var players = [new Player(), new Player(), new Player(), new Player(), new Player(), new Player(), new Player(), new Player()];
 
 var mapSuperSuper = document.createElement("div");
 mapSuperSuper.className = "mapSuperSuper";
 content.appendChild(mapSuperSuper);
-
-/* hide button stuff VVVVVVVVVVVVV */
-
-var mapHideButtonContainer = document.createElement("div");
-mapHideButtonContainer.className = "mapHideButtonContainer";
-    mapHideButtonContainer.onmouseenter = function() {
-        animationEnable(
-            mapHideButton,
-            "mapComeup",
-            "mapComedown"
-        );
-    };
-    mapHideButtonContainer.onmouseleave = function() {
-        animationEnable(
-            mapHideButton,
-            "mapComedown",
-            "mapComeup"
-        );
-    }
-mapSuperSuper.appendChild(mapHideButtonContainer);
-
-var mapHideButton = document.createElement("div");
-mapHideButton.textContent = "Hide"
-mapHideButton.className = "mapHideButton";
-    mapHideButton.onclick = function() {
-        if(mapHidden) {
-            mapHideButton.textContent = "Hide"
-            mapSuperContainer.classList.remove("mapSuperHidden");
-            mapHidden = false;
-        } else {
-            mapHideButton.textContent = "Show"
-            mapSuperContainer.classList.add("mapSuperHidden");
-            mapHidden = true;
-        }
-    }
-mapHideButtonContainer.appendChild(mapHideButton);
-/* hide button stuff ^^^^^^^^^^^^^^^^^^^ */
-/* map auto switch VVVVVVVVVVVVVVVVVVVV */
-
-var manual = true;
-
-var mapSwitchContainer = document.createElement("div");
-mapSwitchContainer.className = "mapSwitchContainer";
-    mapSwitchContainer.onmouseenter = function() {
-        animationEnable(
-            mapSwitch,
-            "mapComeup",
-            "mapComedown"
-        );
-    }
-    mapSwitchContainer.onmouseleave = function() {
-        animationEnable(
-            mapSwitch,
-            "mapComedown",
-            "mapComeup"
-        );
-    }
-mapSuperSuper.appendChild(mapSwitchContainer);
-
-var mapSwitch = document.createElement("div");
-mapSwitch.classList = "mapSwitch mapComeDown";
-mapSwitchContainer.appendChild(mapSwitch);
-
-var mapSwitchAuto = document.createElement("p");
-mapSwitchAuto.textContent = "Auto";
-
-mapSwitch.appendChild(mapSwitchAuto);
-var mapSwitchSlider = document.createElement("div");
-    mapSwitchSlider.onclick = function() {
-        if(manual) {
-            animationEnable(mapSwitch, "mapSwitchRight", "mapSwitchLeft");
-            animationEnable(this, "switchMoveRight", "switchMoveLeft");
-            manual = false;
-        } else {
-            animationEnable(mapSwitch, "mapSwitchLeft", "mapSwitchRight");
-            animationEnable(this, "switchMoveLeft", "switchMoveRight");
-            manual = true;
-        }
-    }
-mapSwitch.appendChild(mapSwitchSlider);
-
-var mapSwitchManual = document.createElement("p");
-mapSwitchManual.textContent = "Manual";
-mapSwitch.appendChild(mapSwitchManual);
-/* map auto switch ^^^^^^^^^^^^^^^^^^^^^^^ */
 
 var mapHidden = false;
 
@@ -119,12 +33,13 @@ var frameCounter = 0;
 var eventQueue = [];
 
 function main() {
-    beginGames();
+    if(clabGamestart) {
+        beginGames();
+    }
 }
 
 function beginGames()
 {
-    let mapGen = new MapGenerator();
     mapGen.generateMap(MAP_SIZE);
     setupPlayers();
 
@@ -194,7 +109,3 @@ function paintEntities() {
 }
 
 main();
-
-function divToImage() {
-    
-}

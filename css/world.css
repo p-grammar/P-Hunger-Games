@@ -303,15 +303,25 @@
     background-color: white;
 }
 
-.makeWorldButton {
+.worldArea {
+    grid-column-start: 1;
+    grid-column-end: 4;
+
+    display: grid;
     margin-top: 5px;
+    grid-template-columns: 1fr;
+    grid-template-rows: 25px 1fr min-content;
+    grid-gap: 5px;
+    width: 100%;
+}
+
+.makeWorldButton {
     width: fit-content;
     height: 25px;
     background-color: lightgray;
     font-family: sans-serif;
     margin-left: auto;
     margin-right: auto;
-    grid-column: 2;
 
     line-height: 25px;
     text-align: center;
@@ -323,5 +333,30 @@
     border-radius: 5px;
     border: 0px;
 
+    cursor: pointer;
+}
+
+.worldMapDisplay {
+    margin-right: auto;
+    margin-left: auto;
+    width: 500px;
+    height: 500px;
+
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.startGameButton {
+    background-color: lightgray;
+    border-radius: 5px;
+    width: 500px;
+    height: 25px;
+
+    margin-right: auto;
+    margin-left: auto;
+
+    line-height: 25px;
+    text-align: center;
+    font-family: sans-serif;
     cursor: pointer;
 }

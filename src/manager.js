@@ -294,10 +294,27 @@ var eventList = document.createElement("div");
 eventList.className = "worldEventList";
 worldEventHolder.appendChild(eventList);
 
+var worldArea = document.createElement("div");
+worldArea.className = "worldArea";
+worldSettingsGrid.appendChild(worldArea);
+
 var makeWorldButton = document.createElement("button");
 makeWorldButton.className = "makeWorldButton";
 makeWorldButton.innerText = "Make World";
-worldSettingsGrid.appendChild(makeWorldButton);
+    makeWorldButton.onclick = () => {
+        MapGenerator.generateMap(30);
+
+        if(worldArea.lastChild.className != "startGameButton") {
+            app.view.className = "worldMapDisplay";
+            worldArea.appendChild(app.view);
+
+            let startGameButton = document.createElement("div");
+            startGameButton.textContent = "Start Game";
+            startGameButton.className = "startGameButton";
+            worldArea.appendChild(startGameButton);
+        }
+    }
+worldArea.appendChild(makeWorldButton);
 
 /* this is the list item with the plus button to add */
 var listItem = document.createElement("div");

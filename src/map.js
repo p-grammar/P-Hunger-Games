@@ -39,20 +39,17 @@ var biomes = [
 
 window.map = null;
 window.app = null;
-
 class MapGenerator {
-    constructor() {
-        app = new PIXI.Application({width: 500, height: 500});
-        
-        content.appendChild(app.view);
-    }
 
-    generateMap(radius) {
+    static generateMap(radius) {
+        if(app === null) {
+            app = new PIXI.Application({width: (radius * 2 + 1) * 10, height: (radius * 2 + 1) * 10});
+        }
         map = this.worldGen(radius, biomes, 9);
         map.grid = new PF.Grid(radius * 2 + 1, radius * 2 + 1);
     }
     
-    vToC(value) {
+    static vToC(value) {
         let c = value * 255;
         if(c > 255) {
             c = 255;
@@ -60,19 +57,33 @@ class MapGenerator {
         return "rgb(" + c + "," + c + "," + c + ")"
     }
 
-    worldGen(radius, biomes, sharpness) {
+    static worldGen(radius, biomes, sharpness) {
         let size = radius * 2 + 1;
         let superSize = Math.ceil(size / sharpness) + 2;
 
         let chunks = [...Array(size)].map(() => Array(size));
         let superChunks = [...Array(superSize)].map(() => Array(superSize));
 
+        function checkMiddle(i, j) {}
+
+        if(superSize % 2 == 0) {
+            checkMiddle = (i, j) => {
+                return (i == superSize / 2 || i == (superSize / 2) - 1)  && (j == superSize / 2 || j == (superSize / 2) - 1);
+            }
+        } else {
+            checkMiddle = (i, j) => {
+                return (i == Math.floor(superSize / 2) && j == Math.floor(superSize / 2));
+            }
+        }
+
         for(let j = 0; j < superSize; ++j) {
             for(let i = 0; i < superSize; ++i) {
-                if (j > superSize / 2 - 1 && j < superSize / 2 + 1 && i > superSize / 2 - 1 && i < superSize / 2 + 1)
-                    superChunks[i][j] = [0, 0, -22];
-                else 
+                if (checkMiddle(i, j)) {
+                    superChunks[i][j] = [0.5, 0.5, 0.5];
+                }
+                else { 
                     superChunks[i][j] = [Math.random(), Math.random(), Math.random()];
+                }
             }
         }
 
