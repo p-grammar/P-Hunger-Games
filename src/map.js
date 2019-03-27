@@ -7,12 +7,12 @@ class Biome {
 class Chunk {
     
     constructor(b, v, x, y) {
-        this.biome = b;
+        //this.biome = biomes[b];
         this.value = v;
         this.x = x;
         this.y = y;
-        this.sprite = new PIXI.Sprite(PIXI.Texture.WHITE);;
-        this.sprite.tint = this.biome.color;
+        this.sprite = new PIXI.Sprite(PIXI.Texture.WHITE);
+        this.sprite.tint = biomes[b].color;
         this.sprite.x = x * 10;
         this.sprite.y = y * 10;
         mapContainer.addChild(this.sprite);
@@ -59,7 +59,7 @@ class MapGenerator {
             app.stage.addChild(viewport);
     
             mapContainer = new PIXI.Container();
-            viewport.addChild(mapContainer);
+
         }
         
         viewport.worldWidth = mapSize;
@@ -80,6 +80,11 @@ class MapGenerator {
         PIXI.utils.destroyTextureCache();
         map = this.worldGen(radius, biomes, 9);
         map.grid = new PF.Grid(radius * 2 + 1, radius * 2 + 1);
+
+        let mapTexture = PIXI.RenderTexture.create(mapSize, mapSize);
+        let mapSprite = new PIXI.Sprite(mapTexture);
+        app.renderer.render(mapContainer, mapTexture);
+        viewport.addChild(mapSprite);
     }
     
     static vToC(value) {
@@ -148,7 +153,7 @@ class MapGenerator {
 
                 var sel = Math.floor(value * biomes.length);
 
-                chunks[i][j] = new Chunk(biomes[sel], this.vToC(value), i, j);
+                chunks[i][j] = new Chunk(sel, this.vToC(value), i, j);
             }
         }
         return new Map(size, size, chunks);
