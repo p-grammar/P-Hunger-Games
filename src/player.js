@@ -13,10 +13,8 @@ const GATHERING = 7;
 const FIRE_MAKING = 8;
 const EXPLOSIVE_HANDLING = 9;
 
-class Player
-{
-    constructor()
-    {
+class Player {
+    constructor() {
         this.district = 0;
 
         this.health = 10;
@@ -59,26 +57,22 @@ class Player
         this.target = [];
     }
 
-    step()
-    {
+    step() {
        // this.location.x += Math.random() * this.speed;
        // this.location.y += Math.random() * this.speed;
 
-        if (this.target.length === 0)
-        {
-            this.pathFind(getRandomInt(0, 5), getRandomInt(0, 5));
+        if (this.target.length === 0) {
+            //this.target = this.pathFind(getRandomInt(0, MAP_SIZE * 2), getRandomInt(0, MAP_SIZE * 2));
         }
-        else
-        {
-            var nextNode = this.target.pop();
-            this.location = { x: nextNode[0], y: nextNode[1] };
+        else {
+            //let nextNode = this.target.pop();
+            //this.location = { x: nextNode[0], y: nextNode[1] };
         }   
     }
 
-    pathFind(destX, destY)
-    {
+    pathFind(destX, destY) {
         //console.log(this.location)
-        this.target = this.finder.findPath(this.location.x, this.location.y, destX, destY, window.worldGrid);
+        return this.finder.findPath(destX, destY, this.location.x, this.location.y, window.worldGrid);
     }
 }
 

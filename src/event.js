@@ -1,27 +1,21 @@
 /* eslint-disable no-unused-vars */
-class Event
-{
-    constructor (canExecuteFunc, executeFunc)
-    {
+class Event {
+    constructor (canExecuteFunc, executeFunc) {
         this.canExecute = canExecuteFunc;
         this.execute = executeFunc;
     }
 }
 
-var rainEvent = new Event(function()
-{
+var rainEvent = new Event(function() {
     return true;
 },
-function()
-{
+function() {
     console.log("rain");
 });
 
-var snowEvent = new Event(function()
-{
+var snowEvent = new Event(function() {
     return true;
 },
-function()
-{
+function() {
     console.log("snow");
 });
