@@ -39,13 +39,14 @@ var biomes = [
 window.map = null;
 window.app = null;
 window.mapContainer = null;
+window.viewport = null;
 class MapGenerator {
     static generateMap(radius) {
+        let mapSize = (radius * 2 + 1) * 10;
         if(app === null) {
-            let mapSize = (radius * 2 + 1) * 10;
             app = new PIXI.Application({width: 500, height: 500});
             content.appendChild(app.view);
-            let viewport = new PIXI.extras.Viewport({
+            viewport = new PIXI.extras.Viewport({
                 screenWidth: 500,
                 screenHeight: 500,
                 worldWidth: mapSize,
@@ -56,18 +57,23 @@ class MapGenerator {
     
             app.stage.addChild(viewport);
     
-            viewport.drag().wheel().clamp({
-                direction: 'all',
-                underflow: 'center'
-            }).clampZoom({
-                minWidth: 100,
-                minHeight: 100,
-                maxWidth: mapSize,
-                maxHeight: mapSize
-            });
             mapContainer = new PIXI.Container();
             viewport.addChild(mapContainer);
         }
+        
+        viewport.worldWidth = mapSize;
+        viewport.worldHeight = mapSize;
+        viewport.drag().wheel().clamp({
+            direction: 'all',
+            underflow: 'center'
+        }).clampZoom({
+            minWidth: 100,
+            minHeight: 100,
+            maxWidth: mapSize,
+            maxHeight: mapSize
+        });
+        viewport.fit();
+
         map = this.worldGen(radius, biomes, 9);
         map.grid = new PF.Grid(radius * 2 + 1, radius * 2 + 1);
     }
