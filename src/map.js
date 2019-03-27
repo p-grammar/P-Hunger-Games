@@ -40,6 +40,7 @@ window.map = null;
 window.app = null;
 window.mapContainer = null;
 window.viewport = null;
+
 class MapGenerator {
     static generateMap(radius) {
         let mapSize = (radius * 2 + 1) * 10;
@@ -59,6 +60,8 @@ class MapGenerator {
     
             mapContainer = new PIXI.Container();
             viewport.addChild(mapContainer);
+        } else {
+            map.cleanup();
         }
         
         viewport.worldWidth = mapSize;

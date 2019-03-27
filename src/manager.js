@@ -165,12 +165,13 @@ function createWorldSize(name) {
     input.min = MIN_WORLD_SIZE;
     input.max = MAX_WORLD_SIZE;
     input.oninput = () => {
-        if(input.value < MIN_WORLD_SIZE) {
-            input.value = MIN_WORLD_SIZE;
-        } else if(input.value > MAX_WORLD_SIZE) {
-            input.value = MAX_WORLD_SIZE;
+        let ret = parseInt(input.value);
+        if(ret < MIN_WORLD_SIZE) {
+            ret = MIN_WORLD_SIZE;
+        } else if(ret > MAX_WORLD_SIZE) {
+            ret = MAX_WORLD_SIZE;
         }
-        __worldDatasheet.worldSize = parseInt(input.value);
+        __worldDatasheet.worldSize = ret;
     }
     worldInputHolder.appendChild(input);
 }
@@ -574,7 +575,7 @@ function makeForm() {
 
             var selfIndex = i * per + j;
 
-            __charactersDatasheet.push(new characterPassInfo());
+            __charactersDatasheet.push(new CharacterPassInfo());
             __charactersDatasheet[selfIndex].params = [];
 
             var characterHolder = document.createElement("div");
