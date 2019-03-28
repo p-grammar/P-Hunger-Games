@@ -1,4 +1,4 @@
-clabGamestart = false;
+clabGamestart = true;
 //var PF = require('pathfinding');
 
 /* eslint-disable no-undef */
@@ -34,16 +34,15 @@ var eventQueue = [];
 
 function main() {
     if(clabGamestart) {
+        MapGenerator.generateMap(__worldDatasheet.worldSize);
+        destroyAndSetup();
         beginGames();
     }
 }
 
 function beginGames()
 {
-    content.appendChild(app.view);
-    MapGenerator.generateMap(MAP_SIZE);
     setupPlayers();
-
     MainLoop.setUpdate(update).setDraw(draw).start();
 }
 

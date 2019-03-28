@@ -1,0 +1,51 @@
+/* and everything is GAY for him */
+
+.gameContent {
+    position: relative;
+    display: grid;
+    width: 100%;
+    height: 100%;
+    user-select: none;
+}
+
+.leftSide {
+    position: relative;
+    width: 100%;
+    height: 100%;
+
+    display: grid;
+
+    background-color: coral;
+    user-select: none;
+}
+
+.divider {
+    width: 100%;
+    height: 100%;
+    display: block;
+    position: relative;
+
+    background-color: #cc6528;
+
+    cursor: w-resize;
+    user-select: none;
+}
+
+.rightSide {
+    width: 100%;
+    height: 100%;
+    position: relative;
+
+    background-color: aquamarine;
+    user-select: none;
+}
+
+.gameMap {
+    width: 100%;
+    height: auto;
+
+    position: relative;
+    grid-row: 2;
+
+    display: block;
+}

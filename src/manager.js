@@ -526,14 +526,22 @@ makeWorldButton.innerText = "Make World";
             startGameButton.textContent = "Start Game";
             startGameButton.className = "startGameButton";
             startGameButton.onclick = () => {
-                while(settingsSuper.lastChild) {
-                    settingsSuper.removeChild(settingsSuper.lastChild);
-                }
+                destroyAndSetup();
             }
             worldArea.appendChild(startGameButton);
         }
     }
 worldArea.appendChild(makeWorldButton);
+
+/* how to actually start the game */
+function destroyAndSetup() {
+    while(settingsSuper.lastChild) {
+        settingsSuper.removeChild(settingsSuper.lastChild);
+    }
+    content.removeChild(settingsSuper);
+    /* will be in gamemanager.js */
+    gameSceneSetup();
+}
 
 /* this is the list item with the plus button to add */
 var listItem = document.createElement("div");
