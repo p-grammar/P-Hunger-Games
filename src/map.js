@@ -4,6 +4,22 @@ class Biome {
         this.color = c;
     }
 }
+
+class Block {
+    constructor(bx, by, x, y, type)
+    {
+        this.x = x;
+        this.y = y;
+        this.type = type;
+        this.sprite = new PIXI.Sprite(blockTextures[type]);
+        this.sprite.scale.x = 1;
+        this.sprite.scale.y = 1;
+        this.sprite.x = (bx + x) * 10;
+        this.sprite.y = (by + y) * 10;
+        blockContainer.addChild(this.sprite);
+    }
+}
+
 class Chunk {
     
     constructor(b, v, x, y) {
@@ -15,6 +31,10 @@ class Chunk {
         this.sprite.tint = biomes[b].color;
         this.sprite.x = x * 10;
         this.sprite.y = y * 10;
+        this.blocks = [
+            [new Block(x, y, 0, 0, b), new Block(x, y, 0, 1, b)],
+            [new Block(x, y, 1, 0, b), new Block(x, y, 1, 1, b)]
+        ]
         mapContainer.addChild(this.sprite);
     }
 }
@@ -36,23 +56,42 @@ var biomes = [
     new Biome("desert", "0xeaa983")
 ]
 
+
 window.map = null;
 window.app = null;
 window.mapContainer = null;
 window.viewport = null;
+window.blockTextures = null;
+window.mapSprite = null;
+window.blockMapSprite = null;
 
 function pixiInit() {
-    app = new PIXI.Application({width: 500, height: 500});
+    app = new PIXI.Application({
+        width: 500, height: 500,
+        antialias: false,
+    });
     viewport = new PIXI.extras.Viewport({
         screenWidth: 500,
         screenHeight: 500,
         interaction: app.renderer.plugins.interaction,
-        passiveWheel: false
+        passiveWheel: false,
     });
-
+    viewport.on('wheel', () => {
+        if (viewport.getVisibleBounds().x > 250) {
+            blockMapSprite.visible = true;
+            mapSprite.visible = false;
+        }
+        else
+        {
+            blockMapSprite.visible = false;
+            mapSprite.visible = true;
+        }
+        console.log(viewport.getVisibleBounds())
+    });
     app.stage.addChild(viewport);
 
     mapContainer = new PIXI.Container();
+    blockContainer = new PIXI.Container();
 }
 
 class MapGenerator {
@@ -64,8 +103,8 @@ class MapGenerator {
             direction: 'all',
             underflow: 'center'
         }).clampZoom({
-            minWidth: 100,
-            minHeight: 100,
+            minWidth: 1,
+            minHeight: 1,
             maxWidth: mapSize,
             maxHeight: mapSize
         });
@@ -77,7 +116,13 @@ class MapGenerator {
         map.grid = new PF.Grid(radius * 2 + 1, radius * 2 + 1);
 
         let mapTexture = PIXI.RenderTexture.create(mapSize, mapSize);
-        let mapSprite = new PIXI.Sprite(mapTexture);
+        mapTexture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
+        mapSprite = new PIXI.Sprite(mapTexture);
+        let blockMapTexture = PIXI.RenderTexture.create(mapSize * 2, mapSize * 2);
+        blockMapTexture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
+        blockMapSprite = new PIXI.Sprite(blockMapTexture);
+        app.renderer.render(blockContainer, blockMapTexture);
+        viewport.addChild(blockMapSprite);
         app.renderer.render(mapContainer, mapTexture);
         viewport.addChild(mapSprite);
     }

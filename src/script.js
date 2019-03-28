@@ -15,7 +15,7 @@ var mapSuperContainer = document.createElement("div");
 mapSuperContainer.className = "mapSuper";
 mapSuperSuper.appendChild(mapSuperContainer);
 
-var MAP_SIZE = 200;
+var MAP_SIZE = 30;
 
 function animationEnable(node, enable, ...disables) {
     node.preventDefault;
@@ -36,7 +36,28 @@ function main() {
     if(clabGamestart) {
         MapGenerator.generateMap(__worldDatasheet.worldSize);
         destroyAndSetup();
-        beginGames();
+        blockTextures = PIXI.loader.add([
+            "images/water.png",
+            "images/beach.png",
+            "images/grass.png",
+            "images/tree.png",
+            "images/rock.png",
+            "images/sand.png"
+        ]).load(function() {
+            blockTextures = [
+                PIXI.loader.resources["images/water.png"].texture,
+                PIXI.loader.resources["images/beach.png"].texture,
+                PIXI.loader.resources["images/grass.png"].texture,
+                PIXI.loader.resources["images/tree.png"].texture,
+                PIXI.loader.resources["images/rock.png"].texture,
+                PIXI.loader.resources["images/sand.png"].texture
+            ]
+            blockTextures.forEach((texture, index) => {
+                blockTextures[index].baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
+            })
+            beginGames();
+        });
+
     }
 }
 
