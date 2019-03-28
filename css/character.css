@@ -11,15 +11,16 @@
     width: calc(100% - 10);
     margin-left: 5px;
     margin-right: 5px;
-    margin-bottom: 5px;
 }
 
 .districtHolder p {
     text-align: center;
     color: #cc6528;
     font-size: 20px;
+    height: 25px;
+    line-height: 25px;
+    margin: 0px;
     font-family: sans-serif;
-    margin: 5px;
 }
 
 .characterHolder {
@@ -27,6 +28,7 @@
     grid-template-columns: max-content max-content 1fr;
     grid-template-rows: 1fr;
     grid-column-gap: 5px;
+    margin-bottom: 5px;
 }
 
 .characterImage {
@@ -54,9 +56,6 @@
 }
 
 label {
-    margin-top: 5px;
-    margin-left: 5px;
-    margin-bottom: 5px;
 
     width: 100px;
     height: 100px;
@@ -193,6 +192,7 @@ label {
     background-color: none;
     border-radius: 5px;
 
+    font-family: sans-serif;
     text-align: center;
 }
 

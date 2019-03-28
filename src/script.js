@@ -1,4 +1,4 @@
-clabGamestart = true;
+clabGamestart = false;
 //var PF = require('pathfinding');
 
 /* eslint-disable no-undef */
