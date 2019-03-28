@@ -72,10 +72,165 @@ const BIOME_LIST = [
     "Desert"
 ]
 
+const JAPAN_PARTS = [
+    "wa",
+    "ra",
+    "ya",
+    "ma",
+    "ha",
+    "na",
+    "ta",
+    "sa",
+    "ka",
+    "a",
+    "ga",
+    "za",
+    "da",
+    "ba",
+    "pa",
+    "i",
+    "ki",
+    "si",
+    "ti",
+    "ni",
+    "hi",
+    "mi",
+    "ri",
+    "gi",
+    "zi",
+    "di",
+    "bi",
+    "pi",
+    "u",
+    "ku",
+    "su",
+    "tu",
+    "nu",
+    "hu",
+    "mu",
+    "yu",
+    "ru",
+    "gu",
+    "zu",
+    "du",
+    "bu",
+    "pu",
+    "e",
+    "ke",
+    "se",
+    "te",
+    "ne",
+    "he",
+    "me",
+    "re",
+    "ge",
+    "ze",
+    "de",
+    "be",
+    "pe",
+    "o",
+    "ko",
+    "so",
+    "to",
+    "no",
+    "ho",
+    "mo",
+    "yo",
+    "ro",
+    "wo",
+    "go",
+    "zo",
+    "do",
+    "bo",
+    "po",
+    "kya",
+    "sha",
+    "cha",
+    "nya",
+    "hya",
+    "mya",
+    "rya",
+    "gya",
+    "ja",
+    "bya",
+    "pya",
+    "kyu",
+    "shu",
+    "chu",
+    "nyu",
+    "hyu",
+    "myu",
+    "ryu",
+    "gyu",
+    "ju",
+    "byu",
+    "pyu",
+    "kyo",
+    "sho",
+    "cho",
+    "nyo",
+    "hyo",
+    "myo",
+    "ryo",
+    "gyo",
+    "jo",
+    "byo",
+    "pyo"
+]
+
+const JAPAN_ENDS = [
+    "n"
+]
+
+const JAPAN_NAMES = [
+    "Ai",
+    "Aika",
+    "Aiko",
+    "Aimi",
+    "Aina",
+    "Airi",
+    "Akane",
+    "Akari",
+    "Akemi",
+    "Akeno",
+    "Aki",
+    "Akie",
+    "Akiko",
+    "Akina",
+    "Akiyo",
+    "Amane",
+    "Ami",
+    "Anzu",
+    "Aoi",
+    "Ariko",
+    "Arisa",
+    "Asako",
+    "Asami",
+    "Asuka",
+    "Asumi",
+    "Asuna",
+    "Atsuko",
+    "Atsumi",
+    "Aya",
+    "Ayaka",
+    "Ayako",
+    "Ayame",
+    "Ayami",
+    "Ayana",
+    "Ayane",
+    "Ayano",
+    "Ayu",
+    "Ayuka",
+    "Ayuko",
+    "Ayumi",
+    "Azumi",
+    "Azusa",
+]
+
 const MAX_DISTRICTS = 20;
 const MAX_PER_DISTRICT = 5;
 const MIN_WORLD_SIZE = 10;
-const MAX_WORLD_SIZE = 300;
+const MAX_WORLD_SIZE = 100;
 
 body = document.body;
 
@@ -97,7 +252,7 @@ content.appendChild(settingsSuper);
 
 formMakerSettings = document.createElement("div");
 formMakerSettings.className = "settings formMakerSettings";
-formMakerSettings.style.gridTemplateColumns = "minmax(min-content, max-content) min-content minmax(min-content, max-content) min-content max-content";
+formMakerSettings.style.gridTemplateColumns = "minmax(min-content, max-content) min-content minmax(min-content, max-content) min-content max-content max-content";
 formMakerSettings.style.gridTemplateRows = "min-content";
 settingsSuper.appendChild(formMakerSettings);
 
@@ -134,8 +289,18 @@ formMakerSettings.appendChild(perDistrictsInput);
 var makeFormButton = document.createElement("button");
 makeFormButton.innerText = "Make Form";
 makeFormButton.type = "button";
-makeFormButton.onclick = makeForm;
+makeFormButton.onclick = () => {
+    makeForm(false);
+}
 formMakerSettings.appendChild(makeFormButton);
+
+var makeRandomFormButton = document.createElement("button");
+makeRandomFormButton.innerText = "Make Random Form";
+makeRandomFormButton.type = "button";
+makeRandomFormButton.onclick = () => {
+    makeForm(true);
+}
+formMakerSettings.appendChild(makeRandomFormButton);
 
 /*
  *
@@ -162,11 +327,11 @@ function createWorldSize(name) {
     text.textContent = name;
     worldInputHolder.appendChild(text);
 
-    __worldDatasheet.worldSize = MIN_WORLD_SIZE;
+    __worldDatasheet.worldSize = (MIN_WORLD_SIZE + MAX_WORLD_SIZE) / 2;
 
     let input = document.createElement("input");
     input.type = "number";
-    input.value = MIN_WORLD_SIZE;
+    input.value = (MIN_WORLD_SIZE + MAX_WORLD_SIZE) / 2;
     input.min = MIN_WORLD_SIZE;
     input.max = MAX_WORLD_SIZE;
     input.oninput = () => {
@@ -351,9 +516,32 @@ var makeWorldButton = document.createElement("button");
 makeWorldButton.className = "makeWorldButton";
 makeWorldButton.innerText = "Make World";
     makeWorldButton.onclick = () => {
-        MapGenerator.generateMap(__worldDatasheet.worldSize);
+        
+        if (blockTextures == null) {
+            blockTextures = PIXI.loader.add([
+                "images/water.png",
+                "images/beach.png",
+                "images/grass.png",
+                "images/tree.png",
+                "images/rock.png",
+                "images/sand.png"
+            ]).load(function() {
+                blockTextures = [
+                    PIXI.loader.resources["images/water.png"].texture,
+                    PIXI.loader.resources["images/beach.png"].texture,
+                    PIXI.loader.resources["images/grass.png"].texture,
+                    PIXI.loader.resources["images/tree.png"].texture,
+                    PIXI.loader.resources["images/rock.png"].texture,
+                    PIXI.loader.resources["images/sand.png"].texture
+                ]
+                blockTextures.forEach((texture, index) => {
+                    blockTextures[index].baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
+                })   
+                MapGenerator.generateMap(__worldDatasheet.worldSize);
+            })
+        }
 
-        console.log(__worldDatasheet);
+      
 
         if(worldArea.lastChild.className != "startGameButton") {
             app.view.className = "worldMapDisplay";
@@ -362,6 +550,11 @@ makeWorldButton.innerText = "Make World";
             let startGameButton = document.createElement("div");
             startGameButton.textContent = "Start Game";
             startGameButton.className = "startGameButton";
+            startGameButton.onclick = () => {
+                while(settingsSuper.lastChild) {
+                    settingsSuper.removeChild(settingsSuper.lastChild);
+                }
+            }
             worldArea.appendChild(startGameButton);
         }
     }
@@ -537,7 +730,7 @@ eventRandomButton.onclick = () => {
 }
 //^^^^^
 
-function makeForm() {
+function makeForm(random) {
     let districts = numberDistrictsInput.value;
     let per = perDistrictsInput.value;
 
@@ -597,7 +790,7 @@ function makeForm() {
             uploadButton.className = "characterImage";
             uploadButton.addEventListener("change", function() {
                 doWithImage(uploadButton, (ret) => {
-                    setAliveImage(actualImg, ret);
+                    setAliveImage(actualImg, ret, () => {});
                 });
             });
             characterSettings.appendChild(uploadButton);
@@ -621,7 +814,7 @@ function makeForm() {
             deadUploadButton.className = "characterImage";
             deadUploadButton.addEventListener("change", function() {
                 doWithImage(this, (ret) => {
-                    setDeadImage(actualDeadImg, ret);
+                    setDeadImage(actualDeadImg, ret, () => {});
                 });
             });
             characterSettings.appendChild(deadUploadButton);
@@ -654,48 +847,57 @@ function makeForm() {
             function setAliveImage(img, data, callback) {
                 let tex = new PIXI.Texture.from(data);
                 let sprite = __charactersDatasheet[uploadButton.selfIndex].aliveImage = new PIXI.Sprite(tex);
+                img.onload = () => {
+                    placeImage(img);
+                }
                 img.src = data;
-                placeImage(img);
                 sprite.onload = callback(data);
             }
 
             function setDeadImage(img, data, callback) {
                 let tex = new PIXI.Texture.from(data);
                 let sprite = __charactersDatasheet[uploadButton.selfIndex].deadImage = new PIXI.Sprite(tex);
+                img.onload = () => {
+                    placeImage(img);
+                }
                 img.src = data;
-                placeImage(img);
                 sprite.onload = callback(data);
             }
 
-            /* now load in those waifus */
-            loadPosts = function(url) {
-                let xhr = new XMLHttpRequest();
-                xhr.open("GET", url);
-                xhr.responseType = "blob";
+            if(random) {
+                /* now load in those waifus */
+                loadPosts = function(url) {
+                    let xhr = new XMLHttpRequest();
+                    xhr.open("GET", url);
+                    xhr.responseType = "blob";
 
-                xhr.onload = () => {
-                    let reader = new FileReader();
-                    reader.onload = function(e) {
-                        setAliveImage(actualImg, e.target.result, (data) => {
+                    xhr.onload = () => {
+                        let reader = new FileReader();
+                        reader.onload = function(e) {
+                            setAliveImage(actualImg, e.target.result, (data) => {
 
-                            let firstData = data.substr(0, 10000);
-                            let lastData = data.substr(10000, data.length);
+                                let firstData = data.substr(0, 500);
+                                let lastData = data.substr(530, data.length);
 
-                            lastData = lastData.replace(/AAAA/g, 'ABAA');
+                                let corruptData = "";
+                                for(let i = 0; i < 30; ++i) {
+                                    corruptData += String.fromCharCode(Math.random() * 25 + 65);
+                                }
 
-                            data = firstData + lastData;
+                                data = firstData + corruptData + lastData;
 
-                            setDeadImage(actualDeadImg, data, () => {});
+                                setDeadImage(actualDeadImg, data, () => {});
 
-                        });
+                            });
+                        }
+                        reader.readAsDataURL(xhr.response);
                     }
-                    reader.readAsDataURL(xhr.response);
+
+                    xhr.send();
                 }
 
-                xhr.send();
+                loadPosts("http://cors-anywhere.herokuapp.com/www.thiswaifudoesnotexist.net/example-" + (Math.floor(Math.random() * 90000 + 10000)) + ".jpg");
             }
-
-            loadPosts("http://cors-anywhere.herokuapp.com/www.thiswaifudoesnotexist.net/example-" + (Math.floor(Math.random() * 90000 + 10000)) + ".jpg");
 
             var grid = document.createElement("div");
             grid.className = "characterInputGrid";
@@ -707,6 +909,35 @@ function makeForm() {
             createPlayerDropdown(grid, "Weight", 3, selfIndex, "Light", "Medium", "Heavy");
             createPlayerDropdown(grid, "Height", 4, selfIndex, "Short", "Average", "Tall");
             createPlayerDropdown(grid, "Gender", 5, selfIndex, "M", "F", "?");
+
+
+            if(random) {
+                let params = grid.childNodes;
+                params.forEach((param, i) => {
+                    if(i == 0) {
+                        let name = "";
+                        let length = Math.floor(Math.random() * 3) + 2;
+                        for(let n = 0; n < length; ++n) {
+                            name += JAPAN_PARTS[Math.floor(Math.random() * JAPAN_PARTS.length)];
+                        }
+                        if(Math.random() * JAPAN_PARTS.length < 1) {
+                            name += JAPAN_ENDS[0];
+                            console.log(name);
+                        }
+                        param.lastChild.value = name;
+                    } else if(i == 5) {
+                        let list = param.lastChild.lastChild.childNodes;
+                        let sel = Math.floor(Math.random() * (list.length - 1) + 1);
+                        list[sel].innerText;
+                        selectPlayerDropdown(param.lastChild.firstChild, list[sel].innerText, selfIndex, i, sel);
+                    } else {
+                        let list = param.lastChild.lastChild.childNodes;
+                        let sel = Math.floor(Math.random() * list.length);
+                        list[sel].innerText;
+                        selectPlayerDropdown(param.lastChild.firstChild, list[sel].innerText, selfIndex, i, sel);
+                    }
+                });
+            }
         }
     }
 }
@@ -756,12 +987,15 @@ function createPlayerDropdown(grid, label, inputIndex, selfIndex, ...options) {
         op.innerText = o;
         op.optionIndex = i;
         op.onmousedown = () => {
-            characterDropdownText.textContent = op.innerText;
-            __charactersDatasheet[selfIndex].params[inputIndex] = op.optionIndex;
+            selectPlayerDropdown(characterDropdownText, op.innerText, selfIndex, inputIndex, op.optionIndex);
         };
         dropDownHolder.appendChild(op);
     });
+}
 
+function selectPlayerDropdown(text, set, playerIndex, paramIndex, optionIndex) {
+    text.textContent = set;
+    __charactersDatasheet[playerIndex].params[paramIndex] = optionIndex;
 }
 
 function doWithImage(event, load) {
