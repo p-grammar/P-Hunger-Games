@@ -32,33 +32,33 @@ var frameCounter = 0;
 
 var eventQueue = [];
 
-function main() {
-    if(clabGamestart) {
-        MapGenerator.generateMap(__worldDatasheet.worldSize);
-        destroyAndSetup();
-        blockTextures = PIXI.loader.add([
-            "images/water.png",
-            "images/beach.png",
-            "images/grass.png",
-            "images/tree.png",
-            "images/rock.png",
-            "images/sand.png"
-        ]).load(function() {
-            blockTextures = [
-                PIXI.loader.resources["images/water.png"].texture,
-                PIXI.loader.resources["images/beach.png"].texture,
-                PIXI.loader.resources["images/grass.png"].texture,
-                PIXI.loader.resources["images/tree.png"].texture,
-                PIXI.loader.resources["images/rock.png"].texture,
-                PIXI.loader.resources["images/sand.png"].texture
-            ]
-            blockTextures.forEach((texture, index) => {
-                blockTextures[index].baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
-            })
-            beginGames();
-        });
+function mapInit(callback) {
+    blockTextures = PIXI.loader.add([
+        "images/water.png",
+        "images/beach.png",
+        "images/grass.png",
+        "images/tree.png",
+        "images/rock.png",
+        "images/sand.png"
+    ]).load(function() {
+        blockTextures = [
+            PIXI.loader.resources["images/water.png"].texture,
+            PIXI.loader.resources["images/beach.png"].texture,
+            PIXI.loader.resources["images/grass.png"].texture,
+            PIXI.loader.resources["images/tree.png"].texture,
+            PIXI.loader.resources["images/rock.png"].texture,
+            PIXI.loader.resources["images/sand.png"].texture
+        ]
+        blockTextures.forEach((texture, index) => {
+            blockTextures[index].baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
+        })
+        callback();
+    });
+}
 
-    }
+function main() {
+    destroyAndSetup();
+    beginGames();
 }
 
 function beginGames()
@@ -129,5 +129,12 @@ function paintEntities() {
     });
 }
 
+/* this is where shit gets init */
+
 pixiInit();
-main();
+mapInit(() => {
+    if(clabGamestart) {
+        MapGenerator.generateMap(__worldDatasheet.worldSize);
+        main();
+    }
+});

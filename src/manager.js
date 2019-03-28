@@ -517,31 +517,7 @@ makeWorldButton.className = "makeWorldButton";
 makeWorldButton.innerText = "Make World";
     makeWorldButton.onclick = () => {
         
-        if (blockTextures == null) {
-            blockTextures = PIXI.loader.add([
-                "images/water.png",
-                "images/beach.png",
-                "images/grass.png",
-                "images/tree.png",
-                "images/rock.png",
-                "images/sand.png"
-            ]).load(function() {
-                blockTextures = [
-                    PIXI.loader.resources["images/water.png"].texture,
-                    PIXI.loader.resources["images/beach.png"].texture,
-                    PIXI.loader.resources["images/grass.png"].texture,
-                    PIXI.loader.resources["images/tree.png"].texture,
-                    PIXI.loader.resources["images/rock.png"].texture,
-                    PIXI.loader.resources["images/sand.png"].texture
-                ]
-                blockTextures.forEach((texture, index) => {
-                    blockTextures[index].baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
-                })   
-                MapGenerator.generateMap(__worldDatasheet.worldSize);
-            })
-        }
-
-      
+        MapGenerator.generateMap(__worldDatasheet.worldSize);
 
         if(worldArea.lastChild.className != "startGameButton") {
             app.view.className = "worldMapDisplay";
@@ -551,7 +527,7 @@ makeWorldButton.innerText = "Make World";
             startGameButton.textContent = "Start Game";
             startGameButton.className = "startGameButton";
             startGameButton.onclick = () => {
-                destroyAndSetup();
+                main();
             }
             worldArea.appendChild(startGameButton);
         }
