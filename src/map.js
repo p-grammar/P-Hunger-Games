@@ -12,11 +12,7 @@ class Chunk {
         this.x = x;
         this.y = y;
         this.sprite = new PIXI.Sprite(PIXI.Texture.WHITE);
-<<<<<<< HEAD
-        this.sprite.tint = this.biome.color;
-=======
         this.sprite.tint = biomes[b].color;
->>>>>>> fecfe1acd6ae63550cb4e7fcbd14deecb8e6715a
         this.sprite.x = x * 10;
         this.sprite.y = y * 10;
         mapContainer.addChild(this.sprite);
@@ -63,26 +59,6 @@ function pixiInit() {
 class MapGenerator {
     static generateMap(radius) {
         let mapSize = (radius * 2 + 1) * 10;
-<<<<<<< HEAD
-=======
-        if(app === null) {
-            app = new PIXI.Application({width: 500, height: 500});
-            content.appendChild(app.view);
-            viewport = new PIXI.extras.Viewport({
-                screenWidth: 500,
-                screenHeight: 500,
-                worldWidth: mapSize,
-                worldHeight: mapSize,
-                interaction: app.renderer.plugins.interaction,
-                passiveWheel: false
-            });
-    
-            app.stage.addChild(viewport);
-    
-            mapContainer = new PIXI.Container();
-
-        }
->>>>>>> fecfe1acd6ae63550cb4e7fcbd14deecb8e6715a
         
         viewport.worldWidth = mapSize;
         viewport.worldHeight = mapSize;
