@@ -1,3 +1,8 @@
+//import * as PIXI from 'pixi.js'
+PIXI.extract.webgl.prototype.base64 = function base64(target, format, quality) {
+    return this.canvas(target).toDataURL(format, quality)
+}
+
 var body;
 
 var header;
@@ -532,8 +537,6 @@ eventRandomButton.onclick = () => {
 }
 //^^^^^
 
-__charactersDatasheet = [];
-
 function makeForm() {
     let districts = numberDistrictsInput.value;
     let per = perDistrictsInput.value;
@@ -550,15 +553,12 @@ function makeForm() {
         per = MAX_PER_DISTRICT;
     }
 
-    //cleanup PIXI stuff
-    __charactersDatasheet.forEach((character) => {
-        character.aliveImage.destroy();
-    });
     __charactersDatasheet = [];
 
     //
     //delete the form before creating a new one
     //
+    
     while (characterSettings.hasChildNodes()) {
         characterSettings.removeChild(characterSettings.lastChild);
     }
@@ -588,18 +588,6 @@ function makeForm() {
             characterHolder.className = "characterHolder";
             districtInputContainer.appendChild(characterHolder);
 
-            /*setup a PIXI app for the character*/ // 
-            let aliveApp = __charactersDatasheet[selfIndex].aliveImage = new PIXI.Application({width: 100, height: 100});
-            let aliveViewport = new PIXI.extras.Viewport({
-                screenWidth: 100,
-                screenHeight: 100,
-                interaction: aliveApp.renderer.plugins.interaction,
-            });
-            let aliveContainer = new PIXI.Container();
-            aliveApp.stage.addChild(aliveViewport);
-            aliveViewport.addChild(aliveContainer);
-            /*****************^*****/
-
             // make character upload picture button
             let uploadButton = document.createElement("input");
             uploadButton.type = "file";
@@ -609,47 +597,23 @@ function makeForm() {
             uploadButton.className = "characterImage";
             uploadButton.addEventListener("change", function() {
                 doWithImage(uploadButton, (ret) => {
-                    setImage(aliveContainer, ret);
+                    setAliveImage(actualImg, ret);
                 });
             });
             characterSettings.appendChild(uploadButton);
-
-            function setImage(container, img) {
-                console.log(img);
-                container.removeChildren();
-                let imageSprite = new PIXI.Sprite(new PIXI.Texture.from(img));//PIXI.Texture.WHITE //new PIXI.Texture.fromImage(ret)
-                imageSprite.width = 100;
-                imageSprite.height = 100;
-                container.addChild(imageSprite);
-            }
-
-            //setImage(aliveContainer, "http://www.thiswaifudoesnotexist.net/example-" + (Math.floor(Math.random() * 90000 + 10000)) + ".jpg");
-            //http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=420603&type=card
-            //setImage(aliveContainer, "http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=" + (Math.floor(Math.random() * 90000 + 10000)) + "&type=card");
-
-            //https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/420px-PNG_transparency_demonstration_1.png
-            //https://cors-anywhere.herokuapp.com/www.thiswaifudoesnotexist.net/example-67531.jpg
-            let loadPosts = function() {
-                let xhr = new XMLHttpRequest();
-                xhr.open("GET", "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/420px-PNG_transparency_demonstration_1.png");
-                /*xhr.setRequestHeader("Accept", 'application/json');*/
-                xhr.send();
-
-                xhr.onreadystatechange = () => {
-                    setImage(aliveContainer, btoa(xhr.responseText));
-                }
-            }
-            loadPosts();
-
             /* label */
-            var label = document.createElement("label");
+            let label = document.createElement("label");
             label.htmlFor = (uploadID);
             label.id = (labelID);
-            label.appendChild(aliveApp.view);
             characterHolder.appendChild(label);
+            //then img
+            let actualImg = document.createElement("img");
+            actualImg.className = "characterDisplay";
+            actualImg.src = "images/plus.svg";
+            label.appendChild(actualImg);
 
-            // then for dead character
-            var deadUploadButton = document.createElement("input");
+            /* make the dead upload button */
+            let deadUploadButton = document.createElement("input");
             deadUploadButton.type = "file";
             deadUploadButton.selfIndex = selfIndex;
             deadUploadButton.labelID = deadLabelID;
@@ -657,38 +621,81 @@ function makeForm() {
             deadUploadButton.className = "characterImage";
             deadUploadButton.addEventListener("change", function() {
                 doWithImage(this, (ret) => {
-                    let tempImg = document.getElementById(this.labelID).lastChild;
-                    __charactersDatasheet[this.selfIndex].deadImage = ret;
-        
-                    tempImg.onload = () => {
-                        let imgWidth  = tempImg.naturalWidth;
-                        let imgHeight = tempImg.naturalHeight;
-                        console.log(imgWidth + " " + imgHeight);
-                        if(imgWidth > imgHeight) {
-                            tempImg.className = "characterDisplayWide";
-                            let percent = ( ((imgWidth / 2) - (imgHeight / 2)) / imgWidth ) * 100;
-                            tempImg.style.transform = "translateX(-" + percent + "%)";
-                        } else {
-                            tempImg.className = "characterDisplayTall";
-                            let percent = ( ((imgHeight / 2) - (imgWidth / 2)) / imgHeight ) * 100;
-                            tempImg.style.transform = "translateY(-" + percent + "%)";
-                        }
-                    }
-
-                    tempImg.src = ret;
+                    setDeadImage(actualDeadImg, ret);
                 });
             });
             characterSettings.appendChild(deadUploadButton);
             //label
-            var deadLabel = document.createElement("label");
+            let deadLabel = document.createElement("label");
             deadLabel.htmlFor = (deadUploadID);
             deadLabel.id = (deadLabelID);
             characterHolder.appendChild(deadLabel);
             //then img
-            var actualDeadImg = document.createElement("img");
+            let actualDeadImg = document.createElement("img");
             actualDeadImg.className = "characterDisplay";
             actualDeadImg.src = "images/plus.svg";
             deadLabel.appendChild(actualDeadImg);
+
+            /* positions the image given to it to be centered in its IMG container */
+            function placeImage(image) {
+                let imgWidth  = image.naturalWidth;
+                let imgHeight = image.naturalHeight;
+                if(imgWidth > imgHeight) {
+                    image.className = "characterDisplayWide";
+                    let percent = ( ((imgWidth / 2) - (imgHeight / 2)) / imgWidth ) * 100;
+                    image.style.transform = "translateX(-" + percent + "%)";
+                } else {
+                    image.className = "characterDisplayTall";
+                    let percent = ( ((imgHeight / 2) - (imgWidth / 2)) / imgHeight ) * 100;
+                    image.style.transform = "translateY(-" + percent + "%)";
+                }
+            }
+
+            function setAliveImage(img, data, callback) {
+                let tex = new PIXI.Texture.from(data);
+                let sprite = __charactersDatasheet[uploadButton.selfIndex].aliveImage = new PIXI.Sprite(tex);
+                img.src = data;
+                placeImage(img);
+                sprite.onload = callback(data);
+            }
+
+            function setDeadImage(img, data, callback) {
+                let tex = new PIXI.Texture.from(data);
+                let sprite = __charactersDatasheet[uploadButton.selfIndex].deadImage = new PIXI.Sprite(tex);
+                img.src = data;
+                placeImage(img);
+                sprite.onload = callback(data);
+            }
+
+            /* now load in those waifus */
+            loadPosts = function(url) {
+                let xhr = new XMLHttpRequest();
+                xhr.open("GET", url);
+                xhr.responseType = "blob";
+
+                xhr.onload = () => {
+                    let reader = new FileReader();
+                    reader.onload = function(e) {
+                        setAliveImage(actualImg, e.target.result, (data) => {
+
+                            let firstData = data.substr(0, 10000);
+                            let lastData = data.substr(10000, data.length);
+
+                            lastData = lastData.replace(/AAAA/g, 'ABAA');
+
+                            data = firstData + lastData;
+
+                            setDeadImage(actualDeadImg, data, () => {});
+
+                        });
+                    }
+                    reader.readAsDataURL(xhr.response);
+                }
+
+                xhr.send();
+            }
+
+            loadPosts("http://cors-anywhere.herokuapp.com/www.thiswaifudoesnotexist.net/example-" + (Math.floor(Math.random() * 90000 + 10000)) + ".jpg");
 
             var grid = document.createElement("div");
             grid.className = "characterInputGrid";
@@ -761,18 +768,9 @@ function doWithImage(event, load) {
     var file = event.files[0];
     var reader = new FileReader();
 
-    reader.onload = async function(e) {
+    reader.onload = function(e) {
         load(e.target.result);
     }
     
-    reader.readAsDataURL(file);
-}
-
-function readData(file) {
-    var ret;
-    reader.onload = function(e) {
-        ret = e.target.result;
-        return ret;
-    };
     reader.readAsDataURL(file);
 }

@@ -11,7 +11,7 @@ class Chunk {
         this.value = v;
         this.x = x;
         this.y = y;
-        this.sprite = new PIXI.Sprite(PIXI.Texture.WHITE);;
+        this.sprite = new PIXI.Sprite(PIXI.Texture.WHITE);
         this.sprite.tint = this.biome.color;
         this.sprite.x = x * 10;
         this.sprite.y = y * 10;
@@ -41,26 +41,24 @@ window.app = null;
 window.mapContainer = null;
 window.viewport = null;
 
+function pixiInit() {
+    app = new PIXI.Application({width: 500, height: 500});
+    viewport = new PIXI.extras.Viewport({
+        screenWidth: 500,
+        screenHeight: 500,
+        interaction: app.renderer.plugins.interaction,
+        passiveWheel: false
+    });
+
+    app.stage.addChild(viewport);
+
+    mapContainer = new PIXI.Container();
+    viewport.addChild(mapContainer);
+}
+
 class MapGenerator {
     static generateMap(radius) {
         let mapSize = (radius * 2 + 1) * 10;
-        if(app === null) {
-            app = new PIXI.Application({width: 500, height: 500});
-            content.appendChild(app.view);
-            viewport = new PIXI.extras.Viewport({
-                screenWidth: 500,
-                screenHeight: 500,
-                worldWidth: mapSize,
-                worldHeight: mapSize,
-                interaction: app.renderer.plugins.interaction,
-                passiveWheel: false
-            });
-    
-            app.stage.addChild(viewport);
-    
-            mapContainer = new PIXI.Container();
-            viewport.addChild(mapContainer);
-        }
         
         viewport.worldWidth = mapSize;
         viewport.worldHeight = mapSize;
@@ -77,7 +75,6 @@ class MapGenerator {
 
         mapContainer.removeChildren();
 
-        PIXI.utils.destroyTextureCache();
         map = this.worldGen(radius, biomes, 9);
         map.grid = new PF.Grid(radius * 2 + 1, radius * 2 + 1);
     }
@@ -154,3 +151,5 @@ class MapGenerator {
         return new Map(size, size, chunks);
     }
 }
+
+pixiInit();

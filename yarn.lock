@@ -16,6 +16,86 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
+"@pixi/canvas-extract@^5.0.0-rc.3":
+  version "5.0.0-rc.3"
+  resolved "https://registry.yarnpkg.com/@pixi/canvas-extract/-/canvas-extract-5.0.0-rc.3.tgz#1fc900e5e58ff04655dead6485cb94a0ccfe64bc"
+  integrity sha512-gYB++nF3L96RPB0xwaAZUF+MVNe+fx5i86w66EBtJtlUcRLbH/XuMlZ8AwXu3Nyi4uvdBy2wh8/bGfi/chGvYA==
+  dependencies:
+    "@pixi/core" "^5.0.0-rc.3"
+    "@pixi/math" "^5.0.0-rc.3"
+    "@pixi/utils" "^5.0.0-rc.3"
+
+"@pixi/constants@^5.0.0-rc.3":
+  version "5.0.0-rc.3"
+  resolved "https://registry.yarnpkg.com/@pixi/constants/-/constants-5.0.0-rc.3.tgz#0f7236bd5392b68aca7c981608310ca25e481861"
+  integrity sha512-PrMmpD6EcQpwx4UkPnYcPuk63oqW3LG2Y+gFMEWVO0nBrkVw0JY/5uwJ9wRz0AiQotFdpd/AmMC3mZl8y1l7jw==
+
+"@pixi/core@^5.0.0-rc.3":
+  version "5.0.0-rc.3"
+  resolved "https://registry.yarnpkg.com/@pixi/core/-/core-5.0.0-rc.3.tgz#ad96c93d4b6efb38c1ce84b45f2f8f99bee05819"
+  integrity sha512-NuDKTmFkFEBYNKykT7BfpxmJdh5Cn3tmPVGvY/31LYvmo7XwYd6BEOOPL8RPJ/eaxPhPd6mRCeU9rmzPXQHA0g==
+  dependencies:
+    "@pixi/constants" "^5.0.0-rc.3"
+    "@pixi/display" "^5.0.0-rc.3"
+    "@pixi/math" "^5.0.0-rc.3"
+    "@pixi/runner" "^5.0.0-rc.3"
+    "@pixi/settings" "^5.0.0-rc.3"
+    "@pixi/ticker" "^5.0.0-rc.3"
+    "@pixi/utils" "^5.0.0-rc.3"
+
+"@pixi/display@^5.0.0-rc.3":
+  version "5.0.0-rc.3"
+  resolved "https://registry.yarnpkg.com/@pixi/display/-/display-5.0.0-rc.3.tgz#92ae78832a3494b37426eb6b6b97055eabab6010"
+  integrity sha512-lIcQeNH345FUTKcQDlsswLR1WBCwsUePqCXboB3YbDgH1O87kzNOMOM3UajKevZZY+dFUGPn+81EhazLDY/4dA==
+  dependencies:
+    "@pixi/math" "^5.0.0-rc.3"
+    "@pixi/settings" "^5.0.0-rc.3"
+    "@pixi/utils" "^5.0.0-rc.3"
+
+"@pixi/extract@^5.0.0-rc.3":
+  version "5.0.0-rc.3"
+  resolved "https://registry.yarnpkg.com/@pixi/extract/-/extract-5.0.0-rc.3.tgz#0a334bfe42c812cefd388c856d7fdc58f2834b3e"
+  integrity sha512-6M5QV7PeQVzt3CjwZV+G9VU96s3PWBZVairrK6SHz1UF5l+2b7+fSiGksaZtPQGc+C9UAcITvtcSGGSJk+aHqw==
+  dependencies:
+    "@pixi/core" "^5.0.0-rc.3"
+    "@pixi/math" "^5.0.0-rc.3"
+    "@pixi/utils" "^5.0.0-rc.3"
+
+"@pixi/math@^5.0.0-rc.3":
+  version "5.0.0-rc.3"
+  resolved "https://registry.yarnpkg.com/@pixi/math/-/math-5.0.0-rc.3.tgz#847e8cf834dc4238ec3cf0ec185ea37be85ba6aa"
+  integrity sha512-of/s2hHwTAN4wOxnLYQDIJftWFJgZ+S24U5N/fP6RHs6OQyegOX3q7f9uvwa+c6ssFNzGpPIF0Df7U2yKZdPFQ==
+
+"@pixi/runner@^5.0.0-rc.3":
+  version "5.0.0-rc.3"
+  resolved "https://registry.yarnpkg.com/@pixi/runner/-/runner-5.0.0-rc.3.tgz#3345337e95770092bcb9ea314112c2276b0335d1"
+  integrity sha512-Fk727Q2Pn8whUclbDima0uQDnmrjMQJ0SIN+3N2E7qe38RWKt4cXHVqzmIKsLVGmTnONPvuyVmEKAy9476u/Fw==
+
+"@pixi/settings@^5.0.0-rc.3":
+  version "5.0.0-rc.3"
+  resolved "https://registry.yarnpkg.com/@pixi/settings/-/settings-5.0.0-rc.3.tgz#973ff43ed4d817e6e0c7da0d759abb3fc5b5f5b7"
+  integrity sha512-brvJZMaeFMW3OKRZrFVG/I6PkES8N8euo7dmEoA/buDGimxSFBC0F8mbMgDHvI9DJ/YZxiCnYfBA6W/A+PPliQ==
+  dependencies:
+    ismobilejs "^0.5.1"
+
+"@pixi/ticker@^5.0.0-rc.3":
+  version "5.0.0-rc.3"
+  resolved "https://registry.yarnpkg.com/@pixi/ticker/-/ticker-5.0.0-rc.3.tgz#fed14b900cb408fd614327b7a31038ba3811f795"
+  integrity sha512-FmWeMKyOb/TUEREpaeLVH3ZDs/NIEdIkB5+Yl3quXMFLhTBYxvecXkpRomEOsKGUOdQgoucsHlXk39sybsioHQ==
+  dependencies:
+    "@pixi/settings" "^5.0.0-rc.3"
+
+"@pixi/utils@^5.0.0-rc.3":
+  version "5.0.0-rc.3"
+  resolved "https://registry.yarnpkg.com/@pixi/utils/-/utils-5.0.0-rc.3.tgz#7e11b585585291213d557b39d5f7f5e72b4cf0a8"
+  integrity sha512-vRrm4pfr6ROspMYKc95NAUjpFyyFLwvhlGu7z81LGbrGoR+BfWhO/BSh6RmKdz0HcFXIkZkBik10+zDHJmKybA==
+  dependencies:
+    "@pixi/constants" "^5.0.0-rc.3"
+    "@pixi/settings" "^5.0.0-rc.3"
+    earcut "^2.1.3"
+    eventemitter3 "^3.1.0"
+    url "^0.11.0"
+
 acorn-jsx@^5.0.0:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/acorn-jsx/-/acorn-jsx-5.0.1.tgz#32a064fd925429216a09b141102bfdd185fae40e"
@@ -165,7 +245,7 @@ doctrine@^3.0.0:
   dependencies:
     esutils "^2.0.2"
 
-earcut@^2.1.4:
+earcut@^2.1.3, earcut@^2.1.4:
   version "2.1.5"
   resolved "https://registry.yarnpkg.com/earcut/-/earcut-2.1.5.tgz#829280a9a3a0f5fee0529f0a47c3e4eff09b21e4"
 
@@ -845,9 +925,19 @@ progress@^2.0.0:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/progress/-/progress-2.0.3.tgz#7e8cf8d8f5b8f239c1bc68beb4eb78567d572ef8"
 
+punycode@1.3.2:
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/punycode/-/punycode-1.3.2.tgz#9653a036fb7c1ee42342f2325cceefea3926c48d"
+  integrity sha1-llOgNvt8HuQjQvIyXM7v6jkmxI0=
+
 punycode@^2.1.0:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.1.1.tgz#b58b010ac40c22c5657616c8d2c2c02c7bf479ec"
+
+querystring@0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/querystring/-/querystring-0.2.0.tgz#b209849203bb25df820da756e747005878521620"
+  integrity sha1-sgmEkgO7Jd+CDadW50cAWHhSFiA=
 
 read-pkg-up@^2.0.0:
   version "2.0.0"
@@ -1049,6 +1139,14 @@ uri-js@^4.2.2:
   resolved "https://registry.yarnpkg.com/uri-js/-/uri-js-4.2.2.tgz#94c540e1ff772956e2299507c010aea6c8838eb0"
   dependencies:
     punycode "^2.1.0"
+
+url@^0.11.0:
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/url/-/url-0.11.0.tgz#3838e97cfc60521eb73c525a8e55bfdd9e2e28f1"
+  integrity sha1-ODjpfPxgUh63PFJajlW/3Z4uKPE=
+  dependencies:
+    punycode "1.3.2"
+    querystring "0.2.0"
 
 validate-npm-package-license@^3.0.1:
   version "3.0.4"

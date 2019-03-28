@@ -4,6 +4,8 @@
   "description": "candlegaymes",
   "main": "script.js",
   "dependencies": {
+    "@pixi/canvas-extract": "^5.0.0-rc.3",
+    "@pixi/extract": "^5.0.0-rc.3",
     "mainloop.js": "^1.0.4",
     "pathfinding": "^0.4.18",
     "pixi-viewport": "^3.21.2",
