@@ -53,13 +53,11 @@ function pixiInit() {
     app.stage.addChild(viewport);
 
     mapContainer = new PIXI.Container();
-    viewport.addChild(mapContainer);
 }
 
 class MapGenerator {
     static generateMap(radius) {
         let mapSize = (radius * 2 + 1) * 10;
-        
         viewport.worldWidth = mapSize;
         viewport.worldHeight = mapSize;
         viewport.drag().wheel().clamp({
@@ -156,5 +154,3 @@ class MapGenerator {
         return new Map(size, size, chunks);
     }
 }
-
-pixiInit();

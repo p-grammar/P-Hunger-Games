@@ -15,7 +15,7 @@ var mapSuperContainer = document.createElement("div");
 mapSuperContainer.className = "mapSuper";
 mapSuperSuper.appendChild(mapSuperContainer);
 
-var MAP_SIZE = 500;
+var MAP_SIZE = 200;
 
 function animationEnable(node, enable, ...disables) {
     node.preventDefault;
@@ -40,6 +40,7 @@ function main() {
 
 function beginGames()
 {
+    content.appendChild(app.view);
     MapGenerator.generateMap(MAP_SIZE);
     setupPlayers();
 
@@ -108,4 +109,5 @@ function paintEntities() {
     });
 }
 
+pixiInit();
 main();
