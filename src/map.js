@@ -7,12 +7,16 @@ class Biome {
 class Chunk {
     
     constructor(b, v, x, y) {
-        this.biome = b;
+        //this.biome = biomes[b];
         this.value = v;
         this.x = x;
         this.y = y;
         this.sprite = new PIXI.Sprite(PIXI.Texture.WHITE);
+<<<<<<< HEAD
         this.sprite.tint = this.biome.color;
+=======
+        this.sprite.tint = biomes[b].color;
+>>>>>>> fecfe1acd6ae63550cb4e7fcbd14deecb8e6715a
         this.sprite.x = x * 10;
         this.sprite.y = y * 10;
         mapContainer.addChild(this.sprite);
@@ -59,6 +63,26 @@ function pixiInit() {
 class MapGenerator {
     static generateMap(radius) {
         let mapSize = (radius * 2 + 1) * 10;
+<<<<<<< HEAD
+=======
+        if(app === null) {
+            app = new PIXI.Application({width: 500, height: 500});
+            content.appendChild(app.view);
+            viewport = new PIXI.extras.Viewport({
+                screenWidth: 500,
+                screenHeight: 500,
+                worldWidth: mapSize,
+                worldHeight: mapSize,
+                interaction: app.renderer.plugins.interaction,
+                passiveWheel: false
+            });
+    
+            app.stage.addChild(viewport);
+    
+            mapContainer = new PIXI.Container();
+
+        }
+>>>>>>> fecfe1acd6ae63550cb4e7fcbd14deecb8e6715a
         
         viewport.worldWidth = mapSize;
         viewport.worldHeight = mapSize;
@@ -77,6 +101,11 @@ class MapGenerator {
 
         map = this.worldGen(radius, biomes, 9);
         map.grid = new PF.Grid(radius * 2 + 1, radius * 2 + 1);
+
+        let mapTexture = PIXI.RenderTexture.create(mapSize, mapSize);
+        let mapSprite = new PIXI.Sprite(mapTexture);
+        app.renderer.render(mapContainer, mapTexture);
+        viewport.addChild(mapSprite);
     }
     
     static vToC(value) {
@@ -145,7 +174,7 @@ class MapGenerator {
 
                 var sel = Math.floor(value * biomes.length);
 
-                chunks[i][j] = new Chunk(biomes[sel], this.vToC(value), i, j);
+                chunks[i][j] = new Chunk(sel, this.vToC(value), i, j);
             }
         }
         return new Map(size, size, chunks);
