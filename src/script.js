@@ -1,4 +1,6 @@
-clabGamestart = true;
+clabGamestart = false;
+ebetGameDebug = true;
+
 //var PF = require('pathfinding');
 
 /* eslint-disable no-undef */
@@ -57,8 +59,23 @@ function mapInit(callback) {
 }
 
 function main() {
+    console.log(__charactersDatasheet);
     destroyAndSetup();
     beginGames();
+
+    if(ebetGameDebug) {
+        createGameMessage(["../images/plus.svg", "../images/sun.png"], "All thee who goes here be cursed. And when will clab wake up?");
+        createGameMessage(["../images/plus.svg", "../images/plus.svg"], "All thee who goes here be cursed. And when will clab wake up?");
+        createGameMessage(["../images/plus.svg", "../images/plus.svg"], "All thee who goes here be cursed. And when will clab wake up?");
+        createGameMessage(["../images/plus.svg", "../images/plus.svg"], "All thee who goes here be cursed. And when will clab wake up?");
+        createGameMessage(["../images/plus.svg", "../images/plus.svg"], "All thee who goes here be cursed. And when will clab wake up?");
+        createGameMessage(["../images/plus.svg", "../images/plus.svg"], "All thee who goes here be cursed. And when will clab wake up?");
+        createGameMessage(["../images/plus.svg", "../images/plus.svg"], "All thee who goes here be cursed. And when will clab wake up?");
+        createGameMessage(["../images/plus.svg", "../images/plus.svg"], "All thee who goes here be cursed. And when will clab wake up?");
+        createGameMessage(["../images/plus.svg", "../images/plus.svg"], "All thee who goes here be cursed. And when will clab wake up?");
+        createGameMessage(["../images/plus.svg", "../images/plus.svg"], "All thee who goes here be cursed. And when will clab wake up?");
+        createGameMessage(["../images/plus.svg", "../images/plus.svg"], "All thee who goes here be cursed. And when will clab wake up?");
+    }
 }
 
 function beginGames()
@@ -134,6 +151,7 @@ function paintEntities() {
 pixiInit();
 mapInit(() => {
     if(clabGamestart) {
+        makeForm(true);
         MapGenerator.generateMap(__worldDatasheet.worldSize);
         main();
     }

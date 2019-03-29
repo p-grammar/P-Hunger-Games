@@ -32,20 +32,20 @@ body {
      overflow-x: hidden;
  }
  
- .content::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
      background-color: #e9a680;
      border-radius: 5px;
  }
  
- .content::-webkit-scrollbar {
+::-webkit-scrollbar {
      width: 10px;
  }
  
- .content::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
      background-color: #cc6528;
  }
  
- .content::-webkit-scrollbar-button {
+::-webkit-scrollbar-button {
      width: 0; 
      height: 0; 
  }
