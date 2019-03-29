@@ -23,6 +23,8 @@ class CharacterPassInfo {
     constructor() {
         this.aliveImage;
         this.deadImage;
+        this.aliveImageData;
+        this.deadImageData;
         this.params;
     }
 }
@@ -38,194 +40,6 @@ class WorldPassInfo {
         this.events;
     }
 }
-
-const passInfoIndices = {
-    NAME: 0,
-    AGE: 1,
-    EYESIGHT: 2,
-    WEIGHT: 3,
-    HEIGHT: 4,
-    GENDER: 5,
-}
-
-const EVENT_OPTIONS = [
-    "Nothing",
-    "Rain",
-    "Drought",
-    "Snow",
-    "Restock",
-    "Squirrel Attack",
-    "Land Mines",
-    "Wildfires",
-    "Fog",
-    "Beast Attack",
-    "Earthquake",
-    "Nuclear Blast"
-]
-
-const BIOME_LIST = [
-    "Ocean",
-    "Beach",
-    "Plains",
-    "Forest",
-    "Mountains",
-    "Desert"
-]
-
-const JAPAN_PARTS = [
-    "wa",
-    "ra",
-    "ya",
-    "ma",
-    "ha",
-    "na",
-    "ta",
-    "sa",
-    "ka",
-    "a",
-    "ga",
-    "za",
-    "da",
-    "ba",
-    "pa",
-    "i",
-    "ki",
-    "si",
-    "ti",
-    "ni",
-    "hi",
-    "mi",
-    "ri",
-    "gi",
-    "zi",
-    "di",
-    "bi",
-    "pi",
-    "u",
-    "ku",
-    "su",
-    "tu",
-    "nu",
-    "hu",
-    "mu",
-    "yu",
-    "ru",
-    "gu",
-    "zu",
-    "du",
-    "bu",
-    "pu",
-    "e",
-    "ke",
-    "se",
-    "te",
-    "ne",
-    "he",
-    "me",
-    "re",
-    "ge",
-    "ze",
-    "de",
-    "be",
-    "pe",
-    "o",
-    "ko",
-    "so",
-    "to",
-    "no",
-    "ho",
-    "mo",
-    "yo",
-    "ro",
-    "wo",
-    "go",
-    "zo",
-    "do",
-    "bo",
-    "po",
-    "kya",
-    "sha",
-    "cha",
-    "nya",
-    "hya",
-    "mya",
-    "rya",
-    "gya",
-    "ja",
-    "bya",
-    "pya",
-    "kyu",
-    "shu",
-    "chu",
-    "nyu",
-    "hyu",
-    "myu",
-    "ryu",
-    "gyu",
-    "ju",
-    "byu",
-    "pyu",
-    "kyo",
-    "sho",
-    "cho",
-    "nyo",
-    "hyo",
-    "myo",
-    "ryo",
-    "gyo",
-    "jo",
-    "byo",
-    "pyo"
-]
-
-const JAPAN_ENDS = [
-    "n"
-]
-
-const JAPAN_NAMES = [
-    "Ai",
-    "Aika",
-    "Aiko",
-    "Aimi",
-    "Aina",
-    "Airi",
-    "Akane",
-    "Akari",
-    "Akemi",
-    "Akeno",
-    "Aki",
-    "Akie",
-    "Akiko",
-    "Akina",
-    "Akiyo",
-    "Amane",
-    "Ami",
-    "Anzu",
-    "Aoi",
-    "Ariko",
-    "Arisa",
-    "Asako",
-    "Asami",
-    "Asuka",
-    "Asumi",
-    "Asuna",
-    "Atsuko",
-    "Atsumi",
-    "Aya",
-    "Ayaka",
-    "Ayako",
-    "Ayame",
-    "Ayami",
-    "Ayana",
-    "Ayane",
-    "Ayano",
-    "Ayu",
-    "Ayuka",
-    "Ayuko",
-    "Ayumi",
-    "Azumi",
-    "Azusa",
-]
 
 const MAX_DISTRICTS = 20;
 const MAX_PER_DISTRICT = 5;
@@ -715,6 +529,20 @@ eventRandomButton.onclick = () => {
 //^^^^^
 
 function makeForm(random) {
+
+    let baseSprite = null;
+    let xSprite = null;
+    if(random) {
+        PIXI.loader.onComplete.add((loader, resources) => {
+            xSprite = new PIXI.Sprite(resources.dead.texture);
+            xSprite.alpha = 0.5;
+        });
+        if(typeof(PIXI.loader.resources.dead) === "undefined") {
+            PIXI.loader.add("dead", "images/dead-overlay.png");
+        }
+        baseSprite = new PIXI.Sprite();
+    }
+
     let districts = numberDistrictsInput.value;
     let per = perDistrictsInput.value;
 
@@ -828,59 +656,21 @@ function makeForm(random) {
                 }
             }
 
-            function setAliveImage(img, data, callback) {
-                let tex = new PIXI.Texture.from(data);
-                let sprite = __charactersDatasheet[uploadButton.selfIndex].aliveImage = new PIXI.Sprite(tex);
+            function setAliveImage(img, data) {
+                let sprite = new PIXI.Sprite(new PIXI.Texture.from(data)); //__charactersDatasheet[uploadButton.selfIndex].aliveImage
                 img.onload = () => {
                     placeImage(img);
                 }
                 img.src = data;
-                sprite.onload = callback(data);
             }
 
-            function setDeadImage(img, data, callback) {
+            function setDeadImage(img, data) {
                 let tex = new PIXI.Texture.from(data);
                 let sprite = __charactersDatasheet[uploadButton.selfIndex].deadImage = new PIXI.Sprite(tex);
                 img.onload = () => {
                     placeImage(img);
                 }
                 img.src = data;
-                sprite.onload = callback(data);
-            }
-
-            if(random) {
-                /* now load in those waifus */
-                loadPosts = function(url) {
-                    let xhr = new XMLHttpRequest();
-                    xhr.open("GET", url);
-                    xhr.responseType = "blob";
-
-                    xhr.onload = () => {
-                        let reader = new FileReader();
-                        reader.onload = function(e) {
-                            setAliveImage(actualImg, e.target.result, (data) => {
-
-                                let firstData = data.substr(0, 500);
-                                let lastData = data.substr(530, data.length);
-
-                                let corruptData = "";
-                                for(let i = 0; i < 30; ++i) {
-                                    corruptData += String.fromCharCode(Math.random() * 25 + 65);
-                                }
-
-                                data = firstData + corruptData + lastData;
-
-                                setDeadImage(actualDeadImg, data, () => {});
-
-                            });
-                        }
-                        reader.readAsDataURL(xhr.response);
-                    }
-
-                    xhr.send();
-                }
-
-                loadPosts("http://cors-anywhere.herokuapp.com/www.thiswaifudoesnotexist.net/example-" + (Math.floor(Math.random() * 90000 + 10000)) + ".jpg");
             }
 
             var grid = document.createElement("div");
@@ -906,7 +696,6 @@ function makeForm(random) {
                         }
                         if(Math.random() * JAPAN_PARTS.length < 1) {
                             name += JAPAN_ENDS[0];
-                            console.log(name);
                         }
                         param.lastChild.value = name;
                     } else if(i == 5) {
@@ -920,6 +709,25 @@ function makeForm(random) {
                         list[sel].innerText;
                         selectPlayerDropdown(param.lastChild.firstChild, list[sel].innerText, selfIndex, i, sel);
                     }
+                });
+
+                /* now load in those waifus */
+                number = Math.floor(Math.random() * 931) + 1;
+                let waifuImg = "images/waifu/waifu (" + number + ").jpg";
+                let waifuResource = "waifu" + number
+                PIXI.loader.add(waifuResource, waifuImg);
+                PIXI.loader.onComplete.add((loader, resources) => {
+
+                    let waifuSprite = new PIXI.Sprite(resources[waifuResource].texture);
+                    waifuSprite.tint = "0x1560d8";
+                    baseSprite.addChild(waifuSprite);
+
+                    baseSprite.addChild(xSprite);
+
+                    let imgData = app.renderer.plugins.extract.base64(baseSprite);
+                    setDeadImage(actualDeadImg, imgData);
+
+                    setAliveImage(actualImg, waifuImg);
                 });
             }
         }

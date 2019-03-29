@@ -14,6 +14,8 @@ class Block {
         this.sprite = new PIXI.Sprite(blockTextures[type]);
         this.sprite.scale.x = 1;
         this.sprite.scale.y = 1;
+        this.sprite.width = 10;
+        this.sprite.height = 10;
         this.sprite.x = (bx + x) * 10;
         this.sprite.y = (by + y) * 10;
         blockContainer.addChild(this.sprite);
@@ -21,7 +23,6 @@ class Block {
 }
 
 class Chunk {
-    
     constructor(b, v, x, y) {
         //this.biome = biomes[b];
         this.value = v;
@@ -77,7 +78,7 @@ function pixiInit() {
         passiveWheel: false,
     });
     viewport.on('wheel', () => {
-        if (viewport.getVisibleBounds().x > 250) {
+        if (viewport.getVisibleBounds().width < 300) {
             blockMapSprite.visible = true;
             mapSprite.visible = false;
         }
