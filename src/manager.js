@@ -331,6 +331,8 @@ makeWorldButton.className = "makeWorldButton";
 makeWorldButton.innerText = "Make World";
     makeWorldButton.onclick = () => {
         
+        console.log(__charactersDatasheet);
+
         MapGenerator.generateMap(__worldDatasheet.worldSize);
 
         if(worldArea.lastChild.className != "startGameButton") {
@@ -528,210 +530,233 @@ eventRandomButton.onclick = () => {
 }
 //^^^^^
 
+var baseSprite = null;
+var xSprite = null;
+
 function makeForm(random) {
 
-    let baseSprite = null;
-    let xSprite = null;
     if(random) {
-        PIXI.loader.onComplete.add((loader, resources) => {
+        PIXI.loader.onComplete.dispatch = (loader, resources) => {
             xSprite = new PIXI.Sprite(resources.dead.texture);
             xSprite.alpha = 0.5;
-        });
+            baseSprite = new PIXI.Sprite();
+            nowMakeForm();
+        }
         if(typeof(PIXI.loader.resources.dead) === "undefined") {
             PIXI.loader.add("dead", "images/dead-overlay.png");
+        } else {
+            nowMakeForm();
         }
-        baseSprite = new PIXI.Sprite();
+    } else {
+        nowMakeForm();
     }
 
-    let districts = numberDistrictsInput.value;
-    let per = perDistrictsInput.value;
+    function nowMakeForm() {
 
-    if(districts < 1) {
-        districts = 1;
-    } else if(districts > MAX_DISTRICTS) {
-        districts = MAX_DISTRICTS;
-    }
+        let districts = numberDistrictsInput.value;
+        let per = perDistrictsInput.value;
 
-    if(per < 1) {
-        per = 1;
-    } else if(per > MAX_PER_DISTRICT) {
-        per = MAX_PER_DISTRICT;
-    }
+        if(districts < 1) {
+            districts = 1;
+        } else if(districts > MAX_DISTRICTS) {
+            districts = MAX_DISTRICTS;
+        }
 
-    __charactersDatasheet = [];
+        if(per < 1) {
+            per = 1;
+        } else if(per > MAX_PER_DISTRICT) {
+            per = MAX_PER_DISTRICT;
+        }
 
-    //
-    //delete the form before creating a new one
-    //
-    
-    while (characterSettings.hasChildNodes()) {
-        characterSettings.removeChild(characterSettings.lastChild);
-    }
+        __charactersDatasheet = [];
 
-    for(let i = 0; i < districts; ++i) {
+        //
+        //delete the form before creating a new one
+        //
+        
+        while (characterSettings.hasChildNodes()) {
+            characterSettings.removeChild(characterSettings.lastChild);
+        }
 
-        var districtInputContainer = document.createElement("div");
-        districtInputContainer.className = "districtHolder"
-        characterSettings.appendChild(districtInputContainer);
-        var districtText = document.createElement("p");
-        districtText.innerText = "District " + (i + 1);
-        districtInputContainer.appendChild(districtText); 
+        for(let i = 0; i < districts; ++i) {
 
-        for(let j = 0; j < per; ++j) {
+            var districtInputContainer = document.createElement("div");
+            districtInputContainer.className = "districtHolder"
+            characterSettings.appendChild(districtInputContainer);
+            var districtText = document.createElement("p");
+            districtText.innerText = "District " + (i + 1);
+            districtInputContainer.appendChild(districtText); 
 
-            var uploadID = "U"+i+j;
-            var labelID = "L"+i+j;
-            var deadUploadID = "DU"+i+j;
-            var deadLabelID = "DL"+i+j;
+            for(let j = 0; j < per; ++j) {
 
-            let selfIndex = i * per + j;
+                var uploadID = "U"+i+j;
+                var labelID = "L"+i+j;
+                var deadUploadID = "DU"+i+j;
+                var deadLabelID = "DL"+i+j;
 
-            __charactersDatasheet.push(new CharacterPassInfo());
-            __charactersDatasheet[selfIndex].params = [];
+                let selfIndex = i * per + j;
 
-            var characterHolder = document.createElement("div");
-            characterHolder.className = "characterHolder";
-            districtInputContainer.appendChild(characterHolder);
+                __charactersDatasheet.push(new CharacterPassInfo());
+                __charactersDatasheet[selfIndex].params = [];
 
-            // make character upload picture button
-            let uploadButton = document.createElement("input");
-            uploadButton.type = "file";
-            uploadButton.selfIndex = selfIndex;
-            uploadButton.labelID = labelID;
-            uploadButton.id = uploadID;
-            uploadButton.className = "characterImage";
-            uploadButton.addEventListener("change", function() {
-                doWithImage(uploadButton, (ret) => {
-                    setAliveImage(actualImg, ret, () => {});
+                var characterHolder = document.createElement("div");
+                characterHolder.className = "characterHolder";
+                districtInputContainer.appendChild(characterHolder);
+
+                // make character upload picture button
+                let uploadButton = document.createElement("input");
+                uploadButton.type = "file";
+                uploadButton.selfIndex = selfIndex;
+                uploadButton.labelID = labelID;
+                uploadButton.id = uploadID;
+                uploadButton.className = "characterImage";
+                uploadButton.addEventListener("change", function() {
+                    doWithImage(uploadButton, (ret) => {
+                        setAliveImage(actualImg, ret, () => {});
+                    });
                 });
-            });
-            characterSettings.appendChild(uploadButton);
-            /* label */
-            let label = document.createElement("label");
-            label.htmlFor = (uploadID);
-            label.id = (labelID);
-            characterHolder.appendChild(label);
-            //then img
-            let actualImg = document.createElement("img");
-            actualImg.className = "characterDisplay";
-            actualImg.src = "images/plus.svg";
-            label.appendChild(actualImg);
+                characterSettings.appendChild(uploadButton);
+                /* label */
+                let label = document.createElement("label");
+                label.htmlFor = (uploadID);
+                label.id = (labelID);
+                characterHolder.appendChild(label);
+                //then img
+                let actualImg = document.createElement("img");
+                actualImg.className = "characterDisplay";
+                actualImg.src = "images/plus.svg";
+                label.appendChild(actualImg);
 
-            /* make the dead upload button */
-            let deadUploadButton = document.createElement("input");
-            deadUploadButton.type = "file";
-            deadUploadButton.selfIndex = selfIndex;
-            deadUploadButton.labelID = deadLabelID;
-            deadUploadButton.id = deadUploadID;
-            deadUploadButton.className = "characterImage";
-            deadUploadButton.addEventListener("change", function() {
-                doWithImage(this, (ret) => {
-                    setDeadImage(actualDeadImg, ret, () => {});
+                /* make the dead upload button */
+                let deadUploadButton = document.createElement("input");
+                deadUploadButton.type = "file";
+                deadUploadButton.selfIndex = selfIndex;
+                deadUploadButton.labelID = deadLabelID;
+                deadUploadButton.id = deadUploadID;
+                deadUploadButton.className = "characterImage";
+                deadUploadButton.addEventListener("change", function() {
+                    doWithImage(this, (ret) => {
+                        setDeadImage(actualDeadImg, ret, () => {});
+                    });
                 });
-            });
-            characterSettings.appendChild(deadUploadButton);
-            //label
-            let deadLabel = document.createElement("label");
-            deadLabel.htmlFor = (deadUploadID);
-            deadLabel.id = (deadLabelID);
-            characterHolder.appendChild(deadLabel);
-            //then img
-            let actualDeadImg = document.createElement("img");
-            actualDeadImg.className = "characterDisplay";
-            actualDeadImg.src = "images/plus.svg";
-            deadLabel.appendChild(actualDeadImg);
+                characterSettings.appendChild(deadUploadButton);
+                //label
+                let deadLabel = document.createElement("label");
+                deadLabel.htmlFor = (deadUploadID);
+                deadLabel.id = (deadLabelID);
+                characterHolder.appendChild(deadLabel);
+                //then img
+                let actualDeadImg = document.createElement("img");
+                actualDeadImg.className = "characterDisplay";
+                actualDeadImg.src = "images/plus.svg";
+                deadLabel.appendChild(actualDeadImg);
 
-            /* positions the image given to it to be centered in its IMG container */
-            function placeImage(image) {
-                let imgWidth  = image.naturalWidth;
-                let imgHeight = image.naturalHeight;
-                if(imgWidth > imgHeight) {
-                    image.className = "characterDisplayWide";
-                    let percent = ( ((imgWidth / 2) - (imgHeight / 2)) / imgWidth ) * 100;
-                    image.style.transform = "translateX(-" + percent + "%)";
-                } else {
-                    image.className = "characterDisplayTall";
-                    let percent = ( ((imgHeight / 2) - (imgWidth / 2)) / imgHeight ) * 100;
-                    image.style.transform = "translateY(-" + percent + "%)";
-                }
-            }
-
-            function setAliveImage(img, data) {
-                let sprite = new PIXI.Sprite(new PIXI.Texture.from(data)); //__charactersDatasheet[uploadButton.selfIndex].aliveImage
-                img.onload = () => {
-                    placeImage(img);
-                }
-                img.src = data;
-            }
-
-            function setDeadImage(img, data) {
-                let tex = new PIXI.Texture.from(data);
-                let sprite = __charactersDatasheet[uploadButton.selfIndex].deadImage = new PIXI.Sprite(tex);
-                img.onload = () => {
-                    placeImage(img);
-                }
-                img.src = data;
-            }
-
-            var grid = document.createElement("div");
-            grid.className = "characterInputGrid";
-            characterHolder.appendChild(grid);
-
-            createPlayerInput(grid, "Name", 0, selfIndex);
-            createPlayerDropdown(grid, "Age", 1, selfIndex, "Child", "Teen", "Young Adult", "Adult", "Senior", "Ancient");
-            createPlayerDropdown(grid, "EyeSight", 2, selfIndex, "Good", "Fair", "Poor");
-            createPlayerDropdown(grid, "Weight", 3, selfIndex, "Light", "Medium", "Heavy");
-            createPlayerDropdown(grid, "Height", 4, selfIndex, "Short", "Average", "Tall");
-            createPlayerDropdown(grid, "Gender", 5, selfIndex, "M", "F", "?");
-
-
-            if(random) {
-                let params = grid.childNodes;
-                params.forEach((param, i) => {
-                    if(i == 0) {
-                        let name = "";
-                        let length = Math.floor(Math.random() * 3) + 2;
-                        for(let n = 0; n < length; ++n) {
-                            name += JAPAN_PARTS[Math.floor(Math.random() * JAPAN_PARTS.length)];
-                        }
-                        if(Math.random() * JAPAN_PARTS.length < 1) {
-                            name += JAPAN_ENDS[0];
-                        }
-                        param.lastChild.value = name;
-                    } else if(i == 5) {
-                        let list = param.lastChild.lastChild.childNodes;
-                        let sel = Math.floor(Math.random() * (list.length - 1) + 1);
-                        list[sel].innerText;
-                        selectPlayerDropdown(param.lastChild.firstChild, list[sel].innerText, selfIndex, i, sel);
+                /* positions the image given to it to be centered in its IMG container */
+                function placeImage(image) {
+                    let imgWidth  = image.naturalWidth;
+                    let imgHeight = image.naturalHeight;
+                    if(imgWidth > imgHeight) {
+                        image.className = "characterDisplayWide";
+                        let percent = ( ((imgWidth / 2) - (imgHeight / 2)) / imgWidth ) * 100;
+                        image.style.transform = "translateX(-" + percent + "%)";
                     } else {
-                        let list = param.lastChild.lastChild.childNodes;
-                        let sel = Math.floor(Math.random() * list.length);
-                        list[sel].innerText;
-                        selectPlayerDropdown(param.lastChild.firstChild, list[sel].innerText, selfIndex, i, sel);
+                        image.className = "characterDisplayTall";
+                        let percent = ( ((imgHeight / 2) - (imgWidth / 2)) / imgHeight ) * 100;
+                        image.style.transform = "translateY(-" + percent + "%)";
                     }
-                });
+                }
 
-                /* now load in those waifus */
-                number = Math.floor(Math.random() * 931) + 1;
-                let waifuImg = "images/waifu/waifu (" + number + ").jpg";
-                let waifuResource = "waifu" + number
-                PIXI.loader.add(waifuResource, waifuImg);
-                PIXI.loader.onComplete.add((loader, resources) => {
+                function setAliveImage(img, data) {
+                    let tex = new PIXI.Texture.from(data);
+                    __charactersDatasheet[uploadButton.selfIndex].aliveImage = new PIXI.Sprite(tex);
+                    __charactersDatasheet[uploadButton.selfIndex].deadImageData = data;
+                    img.onload = () => {
+                        placeImage(img);
+                    }
+                    img.src = data;
+                }
 
-                    let waifuSprite = new PIXI.Sprite(resources[waifuResource].texture);
-                    waifuSprite.tint = "0x1560d8";
-                    baseSprite.addChild(waifuSprite);
+                function setDeadImage(img, data) {
+                    let tex = new PIXI.Texture.from(data);
+                    __charactersDatasheet[uploadButton.selfIndex].deadImage = new PIXI.Sprite(tex);
+                    __charactersDatasheet[uploadButton.selfIndex].deadImageData = data;
+                    img.onload = () => {
+                        placeImage(img);
+                    }
+                    img.src = data;
+                }
 
-                    baseSprite.addChild(xSprite);
+                var grid = document.createElement("div");
+                grid.className = "characterInputGrid";
+                characterHolder.appendChild(grid);
 
-                    let imgData = app.renderer.plugins.extract.base64(baseSprite);
-                    setDeadImage(actualDeadImg, imgData);
+                createPlayerInput(grid, "Name", 0, selfIndex);
+                createPlayerDropdown(grid, "Age", 1, selfIndex, "Child", "Teen", "Young Adult", "Adult", "Senior", "Ancient");
+                createPlayerDropdown(grid, "EyeSight", 2, selfIndex, "Good", "Fair", "Poor");
+                createPlayerDropdown(grid, "Weight", 3, selfIndex, "Light", "Medium", "Heavy");
+                createPlayerDropdown(grid, "Height", 4, selfIndex, "Short", "Average", "Tall");
+                createPlayerDropdown(grid, "Gender", 5, selfIndex, "M", "F", "?");
 
-                    setAliveImage(actualImg, waifuImg);
-                });
+
+                if(random) {
+                    let params = grid.childNodes;
+                    params.forEach((param, i) => {
+                        if(i == 0) {
+                            let name = "";
+                            let length = Math.floor(Math.random() * 3) + 2;
+                            for(let n = 0; n < length; ++n) {
+                                name += JAPAN_PARTS[Math.floor(Math.random() * JAPAN_PARTS.length)];
+                            }
+                            if(Math.random() * JAPAN_PARTS.length < 1) {
+                                name += JAPAN_ENDS[0];
+                            }
+                            param.lastChild.value = name;
+                        } else if(i == 5) {
+                            let list = param.lastChild.lastChild.childNodes;
+                            let sel = Math.floor(Math.random() * (list.length - 1) + 1);
+                            list[sel].innerText;
+                            selectPlayerDropdown(param.lastChild.firstChild, list[sel].innerText, selfIndex, i, sel);
+                        } else {
+                            let list = param.lastChild.lastChild.childNodes;
+                            let sel = Math.floor(Math.random() * list.length);
+                            list[sel].innerText;
+                            selectPlayerDropdown(param.lastChild.firstChild, list[sel].innerText, selfIndex, i, sel);
+                        }
+                    });
+
+                    function loadWaifu(texture) {
+                        let waifuSprite = new PIXI.Sprite(texture);
+                        waifuSprite.tint = "0x1560d8";
+                        baseSprite.addChild(waifuSprite);
+
+                        baseSprite.addChild(xSprite);
+
+                        let imgData = app.renderer.plugins.extract.base64(baseSprite);
+                        setDeadImage(actualDeadImg, imgData);
+
+                        setAliveImage(actualImg, waifuImg);
+                    }
+
+                    let waifuLoader = new PIXI.loaders.Loader();
+
+                    /* now load in those waifus */
+                    let number = Math.floor(Math.random() * 931) + 1;
+                    let waifuImg = "images/waifu/waifu (" + number + ").jpg";
+                    let waifuResource = "waifu" + number
+                    if(typeof(waifuLoader.resources[waifuResource]) === "undefined") {
+                        waifuLoader.add(waifuResource, waifuImg);
+                        waifuLoader.onComplete.dispatch = (loader, resources) => {
+                            loadWaifu(resources[waifuResource].texture);
+                        }
+                        waifuLoader.load();
+                    } else {
+                        loadWaifu(waifuLoader.resources[waifuResource].texture);
+                    }
+                }
+
             }
         }
-    }
+    }   
 }
 
 function createPlayerInput(grid, label, inputIndex, selfIndex) {
